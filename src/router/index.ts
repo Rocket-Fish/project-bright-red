@@ -12,9 +12,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "home" */ '../views/home.vue'),
       },
       {
-        path: '/about',
-        name: 'about',
-        component: () => import(/* webpackChunkName: "about" */ '../views/about.vue'),
+        path: '/my-queues',
+        name: 'my-queues',
+        component: () => import(/* webpackChunkName: "profile" */ '../views/my-queues.vue'),
       },
       {
         path: '/:pathMatch(.*)*',
