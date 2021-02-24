@@ -7,32 +7,47 @@
         <input
           type="text"
           class="input"
+          :class="{ 'is-danger': fields.name.isError }"
           v-model="config.name"
           :disabled="isLoading"
           placeholder="Delubrum Reginae (Savage)"
         />
       </div>
+      <p class="help" :class="{ 'is-danger': fields.name.isError }">
+        {{ getHelpText(fields.name) }}
+      </p>
     </div>
     <div class="field">
       <label class="label">When is it?</label>
       <div class="field is-grouped">
         <div class="control">
-          <input type="date" class="input" v-model="config.date" :disabled="isLoading" />
+          <input
+            type="date"
+            class="input"
+            v-model="config.date"
+            :disabled="isLoading"
+            :class="{ 'is-danger': fields.eventTime.isError }"
+          />
         </div>
         <div class="control">
-          <input type="time" class="input" v-model="config.time" :disabled="isLoading" />
+          <input
+            type="time"
+            class="input"
+            v-model="config.time"
+            :disabled="isLoading"
+            :class="{ 'is-danger': fields.eventTime.isError }"
+          />
         </div>
         <div class="control">
-          <div class="select">
+          <div class="select" :class="{ 'is-danger': fields.eventTime.isError }">
             <select v-model="config.timeZone" :disabled="isLoading">
               <option v-for="zone of timeZones" :key="zone">{{ zone }}</option>
             </select>
           </div>
         </div>
       </div>
-      <p class="help">
-        Note: Safari and IE does not support input date/time. Local timezone referes to your system
-        timezone.
+      <p class="help" :class="{ 'is-danger': fields.eventTime.isError }">
+        {{ getHelpText(fields.eventTime) }}
       </p>
     </div>
     <div class="field">
@@ -40,6 +55,9 @@
       <div class="control">
         <SelectNumOfParties v-model="config.numberOfParties" :disabled="isLoading" />
       </div>
+      <p class="help" :class="{ 'is-danger': fields.numberOfParties.isError }">
+        {{ getHelpText(fields.numberOfParties) }}
+      </p>
     </div>
     <div class="field">
       <label class="label"> Party Composition </label>
@@ -60,11 +78,14 @@
           class="input"
           :min="8"
           :max="128"
+          :class="{ 'is-danger': fields.maxPlayersInQueue.isError }"
           v-model="config.maxPlayersInQueue"
           :disabled="isLoading"
         />
       </div>
-      <p class="help">Allow a maximum of N players in queue</p>
+      <p class="help" :class="{ 'is-danger': fields.maxPlayersInQueue.isError }">
+        {{ getHelpText(fields.maxPlayersInQueue) }}
+      </p>
     </div>
     <div class="field">
       <div class="control">
@@ -97,6 +118,14 @@ import SelectNumOfParties from "@/components/select-num-of-parties.vue";
 import { DateTime } from "luxon";
 import { EventConfig, createEvent } from "@/services/event.service";
 
+interface FieldsToNotice {
+  [k: string]: Notice;
+}
+interface Notice {
+  isError: boolean;
+  error: string;
+  help: string;
+}
 export default defineComponent({
   name: "create-event",
   components: {
@@ -124,16 +153,56 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
+      fields: {
+        name: {
+          isError: false,
+          error: "Name is required, and can have a maximum of 50 characters",
+          help: "",
+        },
+        numberOfParties: {
+          isError: false,
+          error:
+            "IDK how you selected this option but only 1 3 6 and 7 parties are supported at the moment",
+          help: "",
+        },
+        maxPlayersInQueue: {
+          isError: false,
+          error: "This number must be between 8 and 128",
+          help: "Allow a maximum of N players in queue",
+        },
+        eventTime: {
+          isError: false,
+          error: "Unless you have a time machine, you cannot select a time in the past",
+          help:
+            "Note: Safari and IE does not support input date/time. Local timezone referes to your system timezone.",
+        },
+      } as FieldsToNotice,
     };
   },
   methods: {
+    resetErrors(): void {
+      this.fields = Object.entries(this.fields).reduce((acc: FieldsToNotice, [key, value]) => {
+        acc[key] = { ...value, isError: false } as Notice;
+        return acc;
+      }, {} as FieldsToNotice);
+    },
+    getHelpText({ isError, error, help }: Notice): string {
+      return isError ? error : help;
+    },
     async onCreate(): Promise<void> {
+      this.resetErrors();
+      this.isLoading = true;
       try {
-        this.isLoading = true;
         const result = await createEvent(this.config);
         console.log(result);
       } catch (e) {
         console.log(e);
+        const { errors } = e;
+        errors.forEach((item: any) => {
+          if (!!item.field && !!this.fields[item.field]) {
+            this.fields[item.field] = { ...this.fields[item.field], isError: true };
+          }
+        });
       } finally {
         this.isLoading = false;
       }
