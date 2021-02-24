@@ -8,6 +8,7 @@
           type="text"
           class="input"
           v-model="config.name"
+          :disabled="isLoading"
           placeholder="Delubrum Reginae (Savage)"
         />
       </div>
@@ -16,14 +17,14 @@
       <label class="label">When is it?</label>
       <div class="field is-grouped">
         <div class="control">
-          <input type="date" class="input" v-model="config.date" />
+          <input type="date" class="input" v-model="config.date" :disabled="isLoading" />
         </div>
         <div class="control">
-          <input type="time" class="input" v-model="config.time" />
+          <input type="time" class="input" v-model="config.time" :disabled="isLoading" />
         </div>
         <div class="control">
           <div class="select">
-            <select v-model="config.timeZone">
+            <select v-model="config.timeZone" :disabled="isLoading">
               <option v-for="zone of timeZones" :key="zone">{{ zone }}</option>
             </select>
           </div>
@@ -37,7 +38,7 @@
     <div class="field">
       <label class="label">Number of Parties</label>
       <div class="control">
-        <SelectNumOfParties v-model="config.numberOfParties" />
+        <SelectNumOfParties v-model="config.numberOfParties" :disabled="isLoading" />
       </div>
     </div>
     <div class="field">
@@ -54,14 +55,21 @@
     <div class="field">
       <label class="label"> Max Number of players in queue </label>
       <div class="control">
-        <input type="number" class="input" :min="8" :max="128" v-model="config.maxPlayersInQueue" />
+        <input
+          type="number"
+          class="input"
+          :min="8"
+          :max="128"
+          v-model="config.maxPlayersInQueue"
+          :disabled="isLoading"
+        />
       </div>
       <p class="help">Allow a maximum of N players in queue</p>
     </div>
     <div class="field">
       <div class="control">
         <label for="auto-form-party" class="checkbox">
-          <input type="checkbox" id="auto-form-party" />
+          <input type="checkbox" id="auto-form-party" :disabled="isLoading" />
           Auto form party
         </label>
       </div>
@@ -71,7 +79,14 @@
     </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-link" @click="onCreate">Create</button>
+        <button
+          class="button is-link"
+          :class="{ 'is-loading': isLoading }"
+          :disabled="isLoading"
+          @click="onCreate"
+        >
+          Create
+        </button>
       </div>
     </div>
   </div>
@@ -106,13 +121,21 @@ export default defineComponent({
       } as EventConfig,
     };
   },
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
   methods: {
     async onCreate(): Promise<void> {
       try {
+        this.isLoading = true;
         const result = await createEvent(this.config);
         console.log(result);
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
   },

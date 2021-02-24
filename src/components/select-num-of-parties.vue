@@ -1,20 +1,14 @@
 <template>
   <div class="select">
-    <select
-      :value="mapNumberToText[modelValue]"
-      @change="onSelectionChanged"
-    >
-      <option
-        v-for="{number, text} of allowedNumberOfParties"
-        :key="number"
-      >
-        {{text}}
+    <select :value="mapNumberToText[modelValue]" @change="onSelectionChanged" v-bind="$attrs">
+      <option v-for="{ number, text } of allowedNumberOfParties" :key="number">
+        {{ text }}
       </option>
     </select>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 
 interface TextToNumber {
   [text: string]: number;
@@ -25,21 +19,21 @@ interface NumberToText {
 }
 
 export default defineComponent({
-  name: 'select-num-of-parties',
+  name: "select-num-of-parties",
   data() {
     return {
       allowedNumberOfParties: [
-        { number: 1, text: '1 Party (8 People)' },
-        { number: 3, text: '3 Parties (24 People)' },
-        { number: 6, text: '6 Parties (48 People)' },
-        { number: 7, text: '7 Parties (56 People)' },
+        { number: 1, text: "1 Party (8 People)" },
+        { number: 3, text: "3 Parties (24 People)" },
+        { number: 6, text: "6 Parties (48 People)" },
+        { number: 7, text: "7 Parties (56 People)" },
       ],
     };
   },
   props: {
     modelValue: Number,
   },
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   computed: {
     mapTextToNumber(): TextToNumber {
       const result = {} as TextToNumber;
@@ -61,10 +55,9 @@ export default defineComponent({
   methods: {
     onSelectionChanged(event: Event): void {
       const target = event.target as HTMLSelectElement;
-      this.$emit('update:modelValue', this.mapTextToNumber[target.value]);
+      this.$emit("update:modelValue", this.mapTextToNumber[target.value]);
     },
   },
 });
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
