@@ -5,4 +5,4 @@ export const healthCheck = async () => {
   return data;
 };
 
-export default healthCheck;
+export default { healthCheck };

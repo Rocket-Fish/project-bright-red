@@ -11,4 +11,12 @@ const httpOptions = {
 
 const instance = axios.create(httpOptions);
 
+instance.interceptors.response.use(
+  (response) => response,
+  (e) => {
+    const { data } = e.response;
+    throw data;
+  },
+);
+
 export default instance;

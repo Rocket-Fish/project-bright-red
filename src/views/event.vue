@@ -2,12 +2,12 @@
   <div></div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: "event",
+  name: 'event',
   mounted() {
-    console.log("route params", this.$route.params);
+    console.log('route params', this.$route.params);
   },
 });
 </script>

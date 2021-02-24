@@ -15,14 +15,14 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from "vue";
+import { defineComponent, defineAsyncComponent } from 'vue';
 
 const EventCard = defineAsyncComponent({
-  loader: () => import("@/components/event-card.vue"),
+  loader: () => import('@/components/event-card.vue'),
 });
 
 export default defineComponent({
-  name: "my-queues",
+  name: 'my-queues',
   components: {
     EventCard,
   },

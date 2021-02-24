@@ -3,18 +3,18 @@
     <h1 class="title is-1">
       Health
     </h1>
-    <pre>{{health}}</pre>
+    <pre>{{ health }}</pre>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
-import { healthCheck } from "@/services/health.service";
+import { defineComponent } from 'vue';
+import { healthCheck } from '@/services/health.service';
 
 export default defineComponent({
-  name: "health",
+  name: 'health',
   data() {
     return {
-      health: {} as any,
+      health: {},
     };
   },
   mounted() {
@@ -26,11 +26,11 @@ export default defineComponent({
       try {
         this.health = await healthCheck();
       } catch (e) {
-        console.log("error", e);
+        console.log('error');
+        this.health = e;
       }
     },
   },
 });
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
