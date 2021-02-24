@@ -1,49 +1,54 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import MainLayout from '../components/main-layout.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import MainLayout from "../components/main-layout.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/:pathMatch(.*)*',
+    path: "/:pathMatch(.*)*",
     component: MainLayout,
     children: [
       {
-        path: '',
-        name: 'home',
-        component: () => import(/* webpackChunkName: "home" */ '../views/home.vue'),
+        path: "",
+        name: "home",
+        component: () => import(/* webpackChunkName: "home" */ "../views/home.vue"),
       },
       {
-        path: 'my-queues',
-        name: 'my-queues',
-        component: () => import(/* webpackChunkName: "my-queues" */ '../views/my-queues.vue'),
+        path: "my-queues",
+        name: "my-queues",
+        component: () => import(/* webpackChunkName: "my-queues" */ "../views/my-queues.vue"),
       },
       {
-        path: 'create-event',
-        name: 'create-event',
-        component: () => import(/* webpackChunkName: "create-event" */ '../views/create-event.vue'),
+        path: "create-event",
+        name: "create-event",
+        component: () => import(/* webpackChunkName: "create-event" */ "../views/create-event.vue"),
       },
       {
-        path: '4/:eventId',
-        component: () => import(/* webpackChunkName: "event" */ '../components/container.vue'),
+        path: "4/:eventId",
+        component: () => import(/* webpackChunkName: "event" */ "../components/container.vue"),
         children: [
           {
-            path: '',
-            component: () => import('../views/event.vue'),
+            path: "",
+            component: () => import("../views/event.vue"),
           },
           {
-            path: 'admin',
-            component: () => import('../views/event-admin.vue'),
+            path: "admin",
+            component: () => import("../views/event-admin.vue"),
           },
         ],
       },
       {
-        path: 'health',
-        name: 'health',
-        component: () => import(/* webpackChunkName: "health" */ '../views/health.vue'),
+        path: "login",
+        name: "login",
+        component: () => import(/* webpackChunkName: "login" */ "../views/login.vue"),
       },
       {
-        path: '/:pathMatch(.*)*',
-        name: 'not-found',
-        component: () => import(/* webpackChunkName: "not-found" */ '../views/not-found.vue'),
+        path: "health",
+        name: "health",
+        component: () => import(/* webpackChunkName: "health" */ "../views/health.vue"),
+      },
+      {
+        path: "/:pathMatch(.*)*",
+        name: "not-found",
+        component: () => import(/* webpackChunkName: "not-found" */ "../views/not-found.vue"),
       },
     ],
   },
