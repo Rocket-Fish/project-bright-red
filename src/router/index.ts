@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "create-event" */ '../views/create-event.vue'),
       },
       {
-        path: '4/:event/:id',
+        path: '4/:eventId',
         component: () => import(/* webpackChunkName: "event" */ '../components/container.vue'),
         children: [
           {
