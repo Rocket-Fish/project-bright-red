@@ -41,6 +41,12 @@
         >
           My Queues
         </router-link>
+        <router-link
+          class="navbar-item"
+          :to="{name: 'create-event'}"
+        >
+          Create Event
+        </router-link>
       </div>
 
       <div class="navbar-end">

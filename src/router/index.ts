@@ -7,14 +7,33 @@ const routes: Array<RouteRecordRaw> = [
     component: MainLayout,
     children: [
       {
-        path: '/',
+        path: '',
         name: 'home',
         component: () => import(/* webpackChunkName: "home" */ '../views/home.vue'),
       },
       {
-        path: '/my-queues',
+        path: 'my-queues',
         name: 'my-queues',
-        component: () => import(/* webpackChunkName: "profile" */ '../views/my-queues.vue'),
+        component: () => import(/* webpackChunkName: "my-queues" */ '../views/my-queues.vue'),
+      },
+      {
+        path: 'create-event',
+        name: 'create-event',
+        component: () => import(/* webpackChunkName: "create-event" */ '../views/create-event.vue'),
+      },
+      {
+        path: '4/:event/:id',
+        component: () => import(/* webpackChunkName: "event" */ '../components/container.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('../views/event.vue'),
+          },
+          {
+            path: 'admin',
+            component: () => import('../views/event-admin.vue'),
+          },
+        ],
       },
       {
         path: '/:pathMatch(.*)*',
