@@ -36,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
+        path: 'health',
+        name: 'health',
+        component: () => import(/* webpackChunkName: "health" */ '../views/health.vue'),
+      },
+      {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: () => import(/* webpackChunkName: "not-found" */ '../views/not-found.vue'),
