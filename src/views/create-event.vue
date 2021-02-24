@@ -39,7 +39,10 @@
           </div>
         </div>
       </div>
-      <p class="help">Note: Safari and IE does not support input date/time</p>
+      <p class="help">
+        Note: Safari and IE does not support input date/time.
+        Local timezone referes to your system timezone.
+      </p>
     </div>
     <div class="field">
       <label class="label">Number of Parties</label>
@@ -107,7 +110,7 @@ export default defineComponent({
   },
   data() {
     return {
-      timeZones: ["est", "pst", "cst", "mst", "utc"],
+      timeZones: ["local", "est", "pst", "cst", "mst", "utc"],
       config: {
         name: "",
         numberOfParties: 1,
@@ -115,12 +118,9 @@ export default defineComponent({
         time: DateTime.now().setZone("local").toFormat("HH:mm"),
         date: DateTime.now().setZone("local").toFormat("yyyy-MM-dd"),
         autoFormParty: false,
-        timeZone: "est",
+        timeZone: "local",
       },
     };
-  },
-  mounted() {
-    console.log(DateTime.local().setZone("utc").isValid);
   },
 });
 </script>
