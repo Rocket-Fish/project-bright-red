@@ -1,6 +1,7 @@
 export interface UserState {
   displayName: string;
-  anonymousId: string;
+  anonymousId?: string;
+  anonymousKey?: string;
 }
 export interface RootState {
   user?: UserState;
