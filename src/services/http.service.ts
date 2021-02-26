@@ -10,17 +10,14 @@ const httpOptions = {
 
 const instance = axios.create(httpOptions);
 
-// TODO: implement this somewhere else
-// instance.interceptors.request.use((config) => {
-//   console.log("here", store, store.getters.isLoggedIn);
-//   if (store.getters.isLoggedIn) {
-//     console.log("config isloggedin");
+export const saveJWT = (jwt: string) => {
+  console.log("saveJWT", jwt);
+  instance.defaults.headers.common.Authorization = `Bearer ${jwt}`;
+};
 
-//     config.headers.Authorization = `Bearer ${store.getters.jwt}`;
-//   }
-//   console.log("config");
-//   return config;
-// });
+export const removeJWT = () => {
+  instance.defaults.headers.common.Authorization = "";
+};
 
 instance.interceptors.response.use(
   (response) => response,
