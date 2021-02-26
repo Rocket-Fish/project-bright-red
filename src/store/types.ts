@@ -1,5 +1,7 @@
 export interface UserState {
+  isLoggedIn: boolean;
   displayName: string;
+  jwt: string;
   anonymousId?: string;
   anonymousKey?: string;
 }

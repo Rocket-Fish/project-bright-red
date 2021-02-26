@@ -1,20 +1,27 @@
 <template>
   <div class="container">
     <h1 class="title is-1">Create Event</h1>
+    <div class="card mb-4" v-if="!isLoggedIn">
+      <div class="card-content">
+        <p class="title is-4">You are not logged in.</p>
+        <p class="subtitle is-6">Please create an anonymous user before continuing.</p>
+        <AnonymousLogin />
+      </div>
+    </div>
     <div class="field">
       <label class="label"> Event Name </label>
       <div class="control">
         <input
           type="text"
           class="input"
-          :class="{ 'is-danger': fields.name.isError }"
+          :class="{ 'is-danger': fieldsToHelp.name.isError }"
           v-model="config.name"
           :disabled="isLoading"
           placeholder="Delubrum Reginae (Savage)"
         />
       </div>
-      <p class="help" :class="{ 'is-danger': fields.name.isError }">
-        {{ getHelpText(fields.name) }}
+      <p class="help" :class="{ 'is-danger': fieldsToHelp.name.isError }">
+        {{ getHelpText(fieldsToHelp.name) }}
       </p>
     </div>
     <div class="field">
@@ -26,7 +33,7 @@
             class="input"
             v-model="config.date"
             :disabled="isLoading"
-            :class="{ 'is-danger': fields.eventTime.isError }"
+            :class="{ 'is-danger': fieldsToHelp.eventTime.isError }"
           />
         </div>
         <div class="control">
@@ -35,19 +42,19 @@
             class="input"
             v-model="config.time"
             :disabled="isLoading"
-            :class="{ 'is-danger': fields.eventTime.isError }"
+            :class="{ 'is-danger': fieldsToHelp.eventTime.isError }"
           />
         </div>
         <div class="control">
-          <div class="select" :class="{ 'is-danger': fields.eventTime.isError }">
+          <div class="select" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }">
             <select v-model="config.timeZone" :disabled="isLoading">
               <option v-for="zone of timeZones" :key="zone">{{ zone }}</option>
             </select>
           </div>
         </div>
       </div>
-      <p class="help" :class="{ 'is-danger': fields.eventTime.isError }">
-        {{ getHelpText(fields.eventTime) }}
+      <p class="help" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }">
+        {{ getHelpText(fieldsToHelp.eventTime) }}
       </p>
     </div>
     <div class="field">
@@ -55,8 +62,8 @@
       <div class="control">
         <SelectNumOfParties v-model="config.numberOfParties" :disabled="isLoading" />
       </div>
-      <p class="help" :class="{ 'is-danger': fields.numberOfParties.isError }">
-        {{ getHelpText(fields.numberOfParties) }}
+      <p class="help" :class="{ 'is-danger': fieldsToHelp.numberOfParties.isError }">
+        {{ getHelpText(fieldsToHelp.numberOfParties) }}
       </p>
     </div>
     <div class="field">
@@ -78,13 +85,13 @@
           class="input"
           :min="8"
           :max="128"
-          :class="{ 'is-danger': fields.maxPlayersInQueue.isError }"
+          :class="{ 'is-danger': fieldsToHelp.maxPlayersInQueue.isError }"
           v-model="config.maxPlayersInQueue"
           :disabled="isLoading"
         />
       </div>
-      <p class="help" :class="{ 'is-danger': fields.maxPlayersInQueue.isError }">
-        {{ getHelpText(fields.maxPlayersInQueue) }}
+      <p class="help" :class="{ 'is-danger': fieldsToHelp.maxPlayersInQueue.isError }">
+        {{ getHelpText(fieldsToHelp.maxPlayersInQueue) }}
       </p>
     </div>
     <div class="field">
@@ -103,110 +110,91 @@
         <button
           class="button is-link"
           :class="{ 'is-loading': isLoading }"
-          :disabled="isLoading"
-          @click="onCreate"
+          :disabled="isLoading || !isLoggedIn"
+          @click="onCreateEvent"
         >
-          Create
+          Create Event
         </button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineAsyncComponent, defineComponent, ref } from "vue";
 import SelectNumOfParties from "@/components/select-num-of-parties.vue";
-import { DateTime } from "luxon";
 import { EventConfig, createEvent } from "@/services/event.service";
 
-interface FieldsToNotice {
-  [k: string]: Notice;
-}
-interface Notice {
-  isError: boolean;
-  error: string;
-  help: string;
-}
+import useIsLoading from "@/composables/useLoading";
+import useTime from "@/composables/event/useTime";
+import useHelp from "@/composables/event/create/useHelp";
+import { useStore } from "vuex";
+
+const AnonymousLogin = defineAsyncComponent({
+  loader: () => import("@/components/login/anonymous-login.vue"),
+});
+
 export default defineComponent({
   name: "create-event",
   components: {
     SelectNumOfParties,
+    AnonymousLogin,
   },
   setup() {
-    // warning: not setting up ref here will loose reactivity
-    // but available timeZones are static ATM
-    const timeZones = ["local", "est", "pst", "cst", "mst", "utc"];
-    const defaultZone = timeZones[0];
-    const dateNow = DateTime.now().setZone(defaultZone);
-    return {
-      timeZones,
-      config: {
-        name: "",
-        numberOfParties: 1,
-        maxPlayersInQueue: 100,
-        time: dateNow.toFormat("HH:mm"),
-        date: dateNow.toFormat("yyyy-MM-dd"),
-        autoFormParty: false,
-        timeZone: "local",
-      } as EventConfig,
-    };
-  },
-  data() {
-    return {
-      isLoading: false,
-      fields: {
-        name: {
-          isError: false,
-          error: "Name is required, and can have a maximum of 50 characters",
-          help: "",
-        },
-        numberOfParties: {
-          isError: false,
-          error:
-            "IDK how you selected this option but only 1 3 6 and 7 parties are supported at the moment",
-          help: "",
-        },
-        maxPlayersInQueue: {
-          isError: false,
-          error: "This number must be between 8 and 128",
-          help: "Allow a maximum of N players in queue",
-        },
-        eventTime: {
-          isError: false,
-          error: "Unless you have a time machine, you cannot select a time in the past",
-          help:
-            "Note: Safari and IE does not support input date/time. Local timezone referes to your system timezone.",
-        },
-      } as FieldsToNotice,
-    };
-  },
-  methods: {
-    resetErrors(): void {
-      this.fields = Object.entries(this.fields).reduce((acc: FieldsToNotice, [key, value]) => {
-        acc[key] = { ...value, isError: false } as Notice;
-        return acc;
-      }, {} as FieldsToNotice);
-    },
-    getHelpText({ isError, error, help }: Notice): string {
-      return isError ? error : help;
-    },
-    async onCreate(): Promise<void> {
-      this.resetErrors();
-      this.isLoading = true;
+    const store = useStore();
+    const { timeZones, dateNow } = useTime();
+
+    const { isLoading } = useIsLoading();
+
+    // event fieldsToHelp information
+    const { fieldsToHelp, getHelpText, resetErrors } = useHelp();
+
+    // event config information
+    const config = ref({
+      name: "",
+      numberOfParties: 1,
+      maxPlayersInQueue: 100,
+      time: dateNow.value.toFormat("HH:mm"),
+      date: dateNow.value.toFormat("yyyy-MM-dd"),
+      autoFormParty: false,
+      timeZone: "local",
+    } as EventConfig);
+
+    const onCreateEvent = async (): Promise<void> => {
+      resetErrors();
+      isLoading.value = true;
+
       try {
-        const result = await createEvent(this.config);
+        const result = await createEvent(config.value);
         console.log(result);
       } catch (e) {
         console.log(e);
         const { errors } = e;
+        // eslint-disable-next-line
         errors.forEach((item: any) => {
-          if (!!item.field && !!this.fields[item.field]) {
-            this.fields[item.field] = { ...this.fields[item.field], isError: true };
+          if (!!item.field && !!fieldsToHelp.value[item.field]) {
+            fieldsToHelp.value[item.field] = {
+              ...fieldsToHelp.value[item.field],
+              isError: true,
+            };
           }
         });
       } finally {
-        this.isLoading = false;
+        isLoading.value = false;
       }
-    },
+    };
+
+    return {
+      timeZones,
+      config,
+      fieldsToHelp,
+      isLoading,
+      isLoggedIn: store.getters.isLoggedIn,
+
+      // methods
+      resetErrors,
+      getHelpText,
+      onCreateEvent,
+    };
   },
 });
 </script>

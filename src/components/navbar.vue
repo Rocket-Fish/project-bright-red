@@ -33,7 +33,7 @@
           <div class="field is-grouped">
             <p class="control">
               <router-link :to="{ name: 'login' }" class="button is-primary">
-                <span>Login with Discord</span>
+                <span>Login</span>
               </router-link>
             </p>
           </div>
