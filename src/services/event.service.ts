@@ -60,4 +60,34 @@ export const getEvent = async (url: string): Promise<Event> => {
   };
 };
 
+export interface EventQueueConfig {
+  forEvent: number;
+  roles: string;
+}
+
+export interface Candidate {
+  id: number;
+  forEvent: number;
+  roles: string;
+  partyId?: number | null;
+  userId: number;
+  createdAt: DateTime;
+  updatedAt: DateTime;
+}
+
+export const getMyQueuePosition = async (eventId: number) => {
+  const { data } = await http.get("event/queue", { params: { forEvent: eventId } });
+  return data;
+};
+
+export const joinEventQueue = async (config: EventQueueConfig) => {
+  const { data } = await http.post("event/queue", config);
+  return data;
+};
+
+export const leaveEventQueue = async (eventId: number) => {
+  const { data } = await http.delete("event/queue", { params: { forEvent: eventId } });
+  return data;
+};
+
 export default { createEvent };

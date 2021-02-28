@@ -1,14 +1,7 @@
 <template>
   <div class="control" v-for="[i, role] of roles.entries()" :key="`${role.name}-${i}`">
     <label :for="role.name" class="checkbox">
-      <input
-        type="checkbox"
-        class="checkbox"
-        :id="role.name"
-        :checked="role.isSelected"
-        :disabled="disabled"
-        @change="emitRole(role.name)"
-      />
+      <input type="checkbox" class="checkbox" :id="role.name" :checked="role.isSelected" :disabled="disabled" @change="emitRole(role.name)" />
       {{ role.name }}
     </label>
     <div class="pl-4" v-if="role.subroles">
@@ -18,7 +11,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { RoleSelection } from "./queue-for-event.vue";
+import { RoleSelection } from "@/composables/event/useRoles";
 
 export default defineComponent({
   name: "recursive-checkbox",

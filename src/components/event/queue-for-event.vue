@@ -7,16 +7,17 @@
       <h5 class="subtitle">Please select roles you are willing to play</h5>
       <div class="field">
         <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading" />
+        <p class="help" :class="{ 'is-danger': containsError }">{{ error }}</p>
       </div>
       <div class="field is-grouped">
         <div class="control">
-          <button
-            class="button is-link"
-            :class="{ 'is-loading': isLoading }"
-            :disabled="isLoading || !isLoggedIn"
-            @click="onJoinQueue"
-          >
+          <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
             Join Queue
+          </button>
+        </div>
+        <div class="control">
+          <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
+            LeaveQueue
           </button>
         </div>
       </div>
@@ -24,69 +25,81 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
-import { getRoles, Role } from "@/services/role.service";
+import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { getRoles } from "@/services/role.service";
 import useIsLoading from "@/composables/useLoading";
 import { useStore } from "vuex";
+import { joinEventQueue, Event, EventQueueConfig, getMyQueuePosition, leaveEventQueue } from "@/services/event.service";
+import useRole, { RoleSelection } from "@/composables/event/useRoles";
+import useError from "@/composables/useError";
 
 import RecursiveCheckbox from "./recursive-checkbox.vue";
-
-export interface RoleSelection extends Role {
-  isSelected?: boolean;
-  subroles: RoleSelection[];
-}
 
 export default defineComponent({
   name: "queue-for-event",
   components: {
     RecursiveCheckbox,
   },
-  setup() {
+  props: {
+    event: {
+      type: Object as PropType<Event>,
+      required: true,
+    },
+  },
+  setup(props) {
     const store = useStore();
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const { selectRole, roles, rolesAsArray } = useRole();
+    const { isLoading } = useIsLoading();
+    const { error, containsError } = useError();
 
-    const roles = ref([] as RoleSelection[]);
     onMounted(async () => {
-      roles.value = (await getRoles()) as RoleSelection[];
+      try {
+        error.value = "";
+        roles.value = (await getRoles()) as RoleSelection[];
+        const qPosition = await getMyQueuePosition(props.event.id);
+        console.log(qPosition);
+      } catch (e) {
+        error.value = e.errors[0].message;
+      }
     });
 
-    const selectRole = (r: string) => {
-      const makeAllSubrolesTrue = (rSelection: RoleSelection): RoleSelection => {
-        const subroles = rSelection.subroles ? rSelection.subroles.map(makeAllSubrolesTrue) : [];
-        return {
-          ...rSelection,
-          isSelected: true,
-          subroles,
-        };
-      };
-      const roleMapper = (rSelection: RoleSelection): RoleSelection => {
-        const isMatch = rSelection.name === r;
-        const mapFunction = isMatch && !rSelection.isSelected ? makeAllSubrolesTrue : roleMapper;
-        const subroles = rSelection.subroles ? rSelection.subroles.map(mapFunction) : [];
-        return {
-          ...rSelection,
-          isSelected: isMatch ? !rSelection.isSelected : rSelection.isSelected,
-          subroles,
-        } as RoleSelection;
-      };
+    const onJoinQueue = async () => {
+      error.value = "";
+      try {
+        const config = {
+          forEvent: props.event.id,
+          roles: JSON.stringify(rolesAsArray.value),
+        } as EventQueueConfig;
 
-      roles.value = roles.value.map(roleMapper);
+        const result = await joinEventQueue(config);
+        console.log(result);
+      } catch (e) {
+        error.value = e.errors[0].message;
+      }
     };
 
-    const { isLoading } = useIsLoading();
-
-    const onJoinQueue = () => {
-      // TODO: join queue
+    const onLeaveQueue = async () => {
+      error.value = "";
+      try {
+        const result = await leaveEventQueue(props.event.id);
+        console.log(result);
+      } catch (e) {
+        error.value = e.errors[0].message;
+      }
     };
 
     return {
       roles,
       isLoading,
       isLoggedIn,
+      error,
+      containsError,
 
       // methods
       selectRole,
       onJoinQueue,
+      onLeaveQueue,
     };
   },
 });

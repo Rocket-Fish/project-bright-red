@@ -2,7 +2,7 @@
   <div class="container" v-bind="$attrs" v-if="isEventLoaded">
     <EventHeader class="mb-5" :event="event" />
     <AnonLoginCard class="mb-5" v-if="!isLoggedIn" />
-    <QueueForEvent class="mb-5" />
+    <QueueForEvent class="mb-5" :event="event" v-else />
     <PartyList class="mb-5" :event="event" />
   </div>
   <div class="container" v-else>

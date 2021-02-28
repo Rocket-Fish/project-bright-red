@@ -35,7 +35,8 @@ const useHelp = (): UseHelp => {
     },
     eventTime: {
       isError: false,
-      error: "Unless you have a time machine, you cannot select a time in the past",
+      error:
+        "Date time must be in the future to a maximum of 14 days. (Server DB resource contraints)",
       help: "Note: Safari and IE does not support input date/time.",
     },
   } as FieldsToHelp);
