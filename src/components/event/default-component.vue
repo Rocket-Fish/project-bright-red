@@ -1,13 +1,11 @@
 <template>
-  <div class="container content">
-    <h1>User Login feature will come soon.</h1>
-  </div>
+  <div></div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "login",
+  name: "HelloWorld",
 });
 </script>
 <style lang="scss" scoped></style>

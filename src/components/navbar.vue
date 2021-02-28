@@ -32,8 +32,8 @@
         <div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
-              <router-link :to="{ name: 'login' }" class="button is-primary">
-                <span>Login</span>
+              <router-link :to="authButtonRoute" class="button is-primary">
+                <span>{{ authButtonText }}</span>
               </router-link>
             </p>
           </div>
@@ -43,19 +43,32 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "navbar",
-  data() {
-    return {
-      showMobileMenu: false,
+  setup() {
+    const showMobileMenu = ref(false);
+    const onMenuClicked = (): void => {
+      showMobileMenu.value = !showMobileMenu.value;
     };
-  },
-  methods: {
-    onMenuClicked(): void {
-      this.showMobileMenu = !this.showMobileMenu;
-    },
+
+    const store = useStore();
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+
+    const authButtonText = computed(() => (isLoggedIn.value ? "Logout" : "Login"));
+    const authButtonRoute = computed(() => ({ name: isLoggedIn.value ? "logout" : "login" }));
+
+    return {
+      showMobileMenu,
+      isLoggedIn,
+      authButtonText,
+      authButtonRoute,
+
+      // methods
+      onMenuClicked,
+    };
   },
 });
 </script>

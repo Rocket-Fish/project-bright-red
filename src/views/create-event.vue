@@ -97,12 +97,18 @@
     <div class="field">
       <div class="control">
         <label for="auto-form-party" class="checkbox">
-          <input type="checkbox" id="auto-form-party" :disabled="isLoading" />
+          <input
+            type="checkbox"
+            id="auto-form-party"
+            :disabled="true"
+            v-model="config.autoFormParty"
+          />
           Auto form party
         </label>
       </div>
       <p class="help">
-        If a slot is available, immediately pull users into the party from queue.
+        (This feature is coming soon) If a slot is available, immediately pull users into the party
+        from queue.
       </p>
     </div>
     <div class="field is-grouped">
@@ -120,14 +126,15 @@
   </div>
 </template>
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, ref } from "vue";
+import { computed, defineAsyncComponent, defineComponent, ref } from "vue";
 import SelectNumOfParties from "@/components/select-num-of-parties.vue";
 import { EventConfig, createEvent } from "@/services/event.service";
 
 import useIsLoading from "@/composables/useLoading";
-import useTime from "@/composables/event/useTime";
+import useTime, { SupportedTimeZones } from "@/composables/event/useTime";
 import useHelp from "@/composables/event/create/useHelp";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const AnonymousLogin = defineAsyncComponent({
   loader: () => import("@/components/login/anonymous-login.vue"),
@@ -141,6 +148,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const { timeZones, dateNow } = useTime();
 
     const { isLoading } = useIsLoading();
@@ -155,8 +163,8 @@ export default defineComponent({
       maxPlayersInQueue: 100,
       time: dateNow.value.toFormat("HH:mm"),
       date: dateNow.value.toFormat("yyyy-MM-dd"),
-      autoFormParty: false,
-      timeZone: "local",
+      autoFormParty: true,
+      timeZone: SupportedTimeZones.est,
     } as EventConfig);
 
     const onCreateEvent = async (): Promise<void> => {
@@ -164,8 +172,8 @@ export default defineComponent({
       isLoading.value = true;
 
       try {
-        const result = await createEvent(config.value);
-        console.log(result);
+        const { url } = await createEvent(config.value);
+        router.push({ name: "event", params: { eventUrl: url } });
       } catch (e) {
         console.log(e);
         const { errors } = e;
@@ -188,7 +196,7 @@ export default defineComponent({
       config,
       fieldsToHelp,
       isLoading,
-      isLoggedIn: store.getters.isLoggedIn,
+      isLoggedIn: computed(() => store.getters.isLoggedIn),
 
       // methods
       resetErrors,

@@ -22,23 +22,31 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "create-event" */ "../views/create-event.vue"),
       },
       {
-        path: "4/:eventId",
+        path: "4/:eventUrl",
         component: () => import(/* webpackChunkName: "event" */ "../components/container.vue"),
         children: [
           {
             path: "",
+            name: "event",
             component: () => import("../views/event.vue"),
           },
-          {
-            path: "admin",
-            component: () => import("../views/event-admin.vue"),
-          },
+          // DESCOPED for version 1
+          // {
+          //   path: "admin",
+          //   name: "event-admin",
+          //   component: () => import("../views/event-admin.vue"),
+          // },
         ],
       },
       {
         path: "login",
         name: "login",
         component: () => import(/* webpackChunkName: "login" */ "../views/login.vue"),
+      },
+      {
+        path: "logout",
+        name: "logout",
+        component: () => import(/* webpackChunkName: "logout" */ "../views/logout.vue"),
       },
       {
         path: "health",

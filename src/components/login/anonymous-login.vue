@@ -66,16 +66,17 @@ export default defineComponent({
       } else if (displayName.value.length > 200) {
         error.value = "name must be at most 200 characters in length";
       } else {
-        const username = uniqueNamesGenerator(customGeneratorConfig);
-        const password = uniqueNamesGenerator(customGeneratorConfig);
+        const username = `anon-${uniqueNamesGenerator(customGeneratorConfig)}`;
+        const password = `anon-${uniqueNamesGenerator(customGeneratorConfig)}`;
 
         try {
-          const { token, expiresAt } = await register({
+          const { id, token, expiresAt } = await register({
             displayName: displayName.value,
             username,
             password,
           });
           await store.dispatch("setUser", {
+            id,
             isLoggedIn: true,
             displayName: displayName.value,
             jwt: token,

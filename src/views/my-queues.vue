@@ -15,18 +15,21 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from "vue";
+import { useStore } from "vuex";
 
 const EventCard = defineAsyncComponent({
-  loader: () => import('@/components/event-card.vue'),
+  loader: () => import("@/components/event-card.vue"),
 });
 
 export default defineComponent({
-  name: 'my-queues',
+  name: "my-queues",
   components: {
     EventCard,
   },
+  setup() {
+    const store = useStore();
+  },
 });
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

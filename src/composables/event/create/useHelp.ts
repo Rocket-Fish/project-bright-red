@@ -36,8 +36,7 @@ const useHelp = (): UseHelp => {
     eventTime: {
       isError: false,
       error: "Unless you have a time machine, you cannot select a time in the past",
-      help:
-        "Note: Safari and IE does not support input date/time. Local timezone referes to your system timezone.",
+      help: "Note: Safari and IE does not support input date/time.",
     },
   } as FieldsToHelp);
   const getHelpText = ({ isError, error, help }: Help): string => (isError ? error : help);

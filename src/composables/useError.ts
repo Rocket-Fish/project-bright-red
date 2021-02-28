@@ -1,10 +1,4 @@
-// prettier-ignore
-import {
-  computed,
-  Ref,
-  ref,
-  ComputedRef,
-} from "vue";
+import { computed, Ref, ref, ComputedRef } from "vue";
 
 export interface UseError {
   error: Ref<string>;

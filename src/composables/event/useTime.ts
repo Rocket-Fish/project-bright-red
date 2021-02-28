@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 import { Ref, ref } from "vue";
 
 export enum SupportedTimeZones {
-  local = "local",
   utc = "utc",
   est = "est",
   pst = "pst",
@@ -15,8 +14,8 @@ export interface UseTime {
   dateNow: Ref<DateTime>;
 }
 
-const useTime = (defaultZone: SupportedTimeZones = SupportedTimeZones.local): UseTime => {
-  const timeZones = ref(["local", "est", "pst", "cst", "mst", "utc"] as SupportedTimeZones[]);
+const useTime = (defaultZone: SupportedTimeZones = SupportedTimeZones.est): UseTime => {
+  const timeZones = ref(["est", "pst", "cst", "mst", "utc"] as SupportedTimeZones[]);
   const dateNow = ref(DateTime.now().setZone(defaultZone));
 
   return {

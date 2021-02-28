@@ -11,7 +11,6 @@ const httpOptions = {
 const instance = axios.create(httpOptions);
 
 export const saveJWT = (jwt: string) => {
-  console.log("saveJWT", jwt);
   instance.defaults.headers.common.Authorization = `Bearer ${jwt}`;
 };
 
