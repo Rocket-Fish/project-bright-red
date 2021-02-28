@@ -1,6 +1,7 @@
 <template>
   <div class="container" v-bind="$attrs" v-if="isEventLoaded">
     <EventHeader :event="event" />
+    <AnonLoginCard class="mb-5" v-if="!isLoggedIn" />
     <QueueForEvent />
   </div>
   <div class="container" v-else>
@@ -13,9 +14,13 @@ import { useRoute } from "vue-router";
 import { getEvent, Event } from "@/services/event.service";
 import useIsLoading from "@/composables/useLoading";
 import EventHeader from "@/components/event/header.vue";
+import { useStore } from "vuex";
 
 const QueueForEvent = defineAsyncComponent({
   loader: () => import("@/components/event/queue-for-event.vue"),
+});
+const AnonLoginCard = defineAsyncComponent({
+  loader: () => import("@/components/login/anon-login-card.vue"),
 });
 
 export default defineComponent({
@@ -23,8 +28,10 @@ export default defineComponent({
   components: {
     EventHeader,
     QueueForEvent,
+    AnonLoginCard,
   },
   setup() {
+    const store = useStore();
     const route = useRoute();
 
     const { eventUrl } = route.params;
@@ -41,6 +48,7 @@ export default defineComponent({
       event,
       isLoading,
       isEventLoaded,
+      isLoggedIn: computed(() => store.getters.isLoggedIn),
     };
   },
 });

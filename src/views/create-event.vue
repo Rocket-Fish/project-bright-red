@@ -1,13 +1,9 @@
 <template>
   <div class="container">
     <h1 class="title is-1">Create Event</h1>
-    <div class="card mb-4" v-if="!isLoggedIn">
-      <div class="card-content">
-        <p class="title is-4">You are not logged in.</p>
-        <p class="subtitle is-6">Please create an anonymous user before continuing.</p>
-        <AnonymousLogin />
-      </div>
-    </div>
+
+    <AnonLoginCard class="mb-4" v-if="!isLoggedIn" />
+
     <div class="field">
       <label class="label"> Event Name </label>
       <div class="control">
@@ -136,15 +132,15 @@ import useHelp from "@/composables/event/create/useHelp";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-const AnonymousLogin = defineAsyncComponent({
-  loader: () => import("@/components/login/anonymous-login.vue"),
+const AnonLoginCard = defineAsyncComponent({
+  loader: () => import("@/components/login/anon-login-card.vue"),
 });
 
 export default defineComponent({
   name: "create-event",
   components: {
     SelectNumOfParties,
-    AnonymousLogin,
+    AnonLoginCard,
   },
   setup() {
     const store = useStore();
