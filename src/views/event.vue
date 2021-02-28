@@ -1,8 +1,9 @@
 <template>
   <div class="container" v-bind="$attrs" v-if="isEventLoaded">
-    <EventHeader :event="event" />
+    <EventHeader class="mb-5" :event="event" />
     <AnonLoginCard class="mb-5" v-if="!isLoggedIn" />
-    <QueueForEvent />
+    <QueueForEvent class="mb-5" />
+    <PartyList class="mb-5" :event="event" />
   </div>
   <div class="container" v-else>
     Loading...
@@ -22,6 +23,9 @@ const QueueForEvent = defineAsyncComponent({
 const AnonLoginCard = defineAsyncComponent({
   loader: () => import("@/components/login/anon-login-card.vue"),
 });
+const PartyList = defineAsyncComponent({
+  loader: () => import("@/components/event/party-list.vue"),
+});
 
 export default defineComponent({
   name: "event",
@@ -29,6 +33,7 @@ export default defineComponent({
     EventHeader,
     QueueForEvent,
     AnonLoginCard,
+    PartyList,
   },
   setup() {
     const store = useStore();

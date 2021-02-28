@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-5">
+  <div class="card" v-bind="$attrs">
     <div class="card-content">
       <h3 class="title is-3">
         {{ event.name }}
