@@ -14,7 +14,7 @@
         }}
       </p>
       <div class="field mt-4">
-        <label class="label">Sharable Link</label>
+        <label class="label">Shareable Link</label>
         <div class="field has-addons">
           <div class="control" style="flex-grow: 1">
             <input type="text" class="input" readonly="true" ref="copyfield" :value="currentUrl" />
