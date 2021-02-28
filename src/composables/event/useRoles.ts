@@ -56,10 +56,24 @@ const useRole = () => {
   };
   const rolesAsArray = computed(() => roles.value.reduce(reduceRoleRecursive, [] as string[]));
 
+  const convertArrayToRole = (array: string[]) => {
+    const recursiveMapperFunction = (roleSelection: RoleSelection): RoleSelection => {
+      const { subroles, name } = roleSelection;
+      const isSelected = array.includes(name);
+      const insertObject = {} as any;
+      if (Array.isArray(subroles) && subroles.length > 0) {
+        insertObject.subroles = roleSelection.subroles.map(recursiveMapperFunction);
+      }
+      return { ...roleSelection, isSelected, ...insertObject };
+    };
+    roles.value = roles.value.map(recursiveMapperFunction);
+  };
+
   return {
     selectRole,
     roles,
     rolesAsArray,
+    convertArrayToRole,
   };
 };
 

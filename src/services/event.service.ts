@@ -68,21 +68,41 @@ export interface EventQueueConfig {
 export interface Candidate {
   id: number;
   forEvent: number;
-  roles: string;
+  roles: string[];
   partyId?: number | null;
   userId: number;
   createdAt: DateTime;
   updatedAt: DateTime;
 }
 
-export const getMyQueuePosition = async (eventId: number) => {
-  const { data } = await http.get("event/queue", { params: { forEvent: eventId } });
-  return data;
+const parseEventData = (data: any): Candidate => {
+  const rawData = convert(data);
+  try {
+    return {
+      ...rawData,
+      roles: JSON.parse(rawData.roles),
+      createdAt: DateTime.fromISO(rawData.createdAt),
+      updatedAt: DateTime.fromISO(rawData.updatedAt),
+    };
+  } catch (e) {
+    throw {
+      errors: [
+        {
+          message: "Cannot parse JSON from server, something went very wrong.",
+        },
+      ],
+    };
+  }
 };
 
-export const joinEventQueue = async (config: EventQueueConfig) => {
+export const getMyQueuePosition = async (eventId: number): Promise<Candidate> => {
+  const { data } = await http.get("event/queue", { params: { forEvent: eventId } });
+  return parseEventData(data);
+};
+
+export const joinEventQueue = async (config: EventQueueConfig): Promise<Candidate> => {
   const { data } = await http.post("event/queue", config);
-  return data;
+  return parseEventData(data);
 };
 
 export const leaveEventQueue = async (eventId: number) => {

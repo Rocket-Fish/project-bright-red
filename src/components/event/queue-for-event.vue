@@ -29,7 +29,7 @@ import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { getRoles } from "@/services/role.service";
 import useIsLoading from "@/composables/useLoading";
 import { useStore } from "vuex";
-import { joinEventQueue, Event, EventQueueConfig, getMyQueuePosition, leaveEventQueue } from "@/services/event.service";
+import { joinEventQueue, Event, EventQueueConfig, getMyQueuePosition, leaveEventQueue, Candidate } from "@/services/event.service";
 import useRole, { RoleSelection } from "@/composables/event/useRoles";
 import useError from "@/composables/useError";
 
@@ -49,43 +49,56 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
-    const { selectRole, roles, rolesAsArray } = useRole();
+    const { selectRole, roles, rolesAsArray, convertArrayToRole } = useRole();
     const { isLoading } = useIsLoading();
     const { error, containsError } = useError();
+    const myQueuePosition = ref(null as Candidate | null);
 
     onMounted(async () => {
       try {
+        isLoading.value = true;
         error.value = "";
         roles.value = (await getRoles()) as RoleSelection[];
-        const qPosition = await getMyQueuePosition(props.event.id);
-        console.log(qPosition);
+        try {
+          myQueuePosition.value = await getMyQueuePosition(props.event.id);
+          convertArrayToRole(myQueuePosition.value.roles);
+        } catch (e) {
+          // do nothing cuz this error is expected. This erroring out means havn't registered yet.
+        }
       } catch (e) {
         error.value = e.errors[0].message;
+      } finally {
+        isLoading.value = false;
       }
     });
 
     const onJoinQueue = async () => {
-      error.value = "";
       try {
+        error.value = "";
+        isLoading.value = true;
         const config = {
           forEvent: props.event.id,
           roles: JSON.stringify(rolesAsArray.value),
         } as EventQueueConfig;
 
-        const result = await joinEventQueue(config);
-        console.log(result);
+        myQueuePosition.value = await joinEventQueue(config);
       } catch (e) {
         error.value = e.errors[0].message;
+      } finally {
+        isLoading.value = false;
       }
     };
 
     const onLeaveQueue = async () => {
       error.value = "";
       try {
+        isLoading.value = true;
         const result = await leaveEventQueue(props.event.id);
         console.log(result);
       } catch (e) {
         error.value = e.errors[0].message;
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -95,6 +108,7 @@ export default defineComponent({
       isLoggedIn,
       error,
       containsError,
+      myQueuePosition,
 
       // methods
       selectRole,
