@@ -6,16 +6,16 @@
       </h3>
       <h5 class="subtitle">Please select roles you are willing to play</h5>
       <div class="field">
-        <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading" />
+        <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading || inQueue" />
         <p class="help" :class="{ 'is-danger': containsError }">{{ error }}</p>
       </div>
       <div class="field is-grouped">
-        <div class="control">
+        <div class="control" v-if="!inQueue">
           <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
             Join Queue
           </button>
         </div>
-        <div class="control">
+        <div class="control" v-else>
           <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
             LeaveQueue
           </button>
@@ -53,6 +53,7 @@ export default defineComponent({
     const { isLoading } = useIsLoading();
     const { error, containsError } = useError();
     const myQueuePosition = ref(null as Candidate | null);
+    const inQueue = computed(() => myQueuePosition.value !== null);
 
     onMounted(async () => {
       try {
@@ -93,8 +94,8 @@ export default defineComponent({
       error.value = "";
       try {
         isLoading.value = true;
-        const result = await leaveEventQueue(props.event.id);
-        console.log(result);
+        await leaveEventQueue(props.event.id);
+        myQueuePosition.value = null;
       } catch (e) {
         error.value = e.errors[0].message;
       } finally {
@@ -109,6 +110,7 @@ export default defineComponent({
       error,
       containsError,
       myQueuePosition,
+      inQueue,
 
       // methods
       selectRole,
