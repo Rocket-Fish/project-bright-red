@@ -75,6 +75,10 @@ export default defineComponent({
 
     const { isLoading } = useIsLoading();
 
+    const onJoinQueue = () => {
+      // TODO: join queue
+    };
+
     return {
       roles,
       isLoading,
@@ -82,6 +86,7 @@ export default defineComponent({
 
       // methods
       selectRole,
+      onJoinQueue,
     };
   },
 });
