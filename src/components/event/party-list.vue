@@ -18,7 +18,13 @@
             <p class="menu-label">party {{ party.partyNumber }}</p>
             <ul class="menu-list">
               <li v-if="party.candidates.length === 0">
-                <a>[No Members Present]</a>
+                <a class="custom-menu-item">
+                  <div class="left">
+                    <p>
+                      [No Members Present]
+                    </p>
+                  </div>
+                </a>
               </li>
               <li v-for="candidate of party.candidates" :key="`candidate-${candidate.id}`">
                 <a class="custom-menu-item">
@@ -97,6 +103,7 @@ export default defineComponent({
 
   .right {
     flex-shrink: 0;
+    padding: 0 0 0 5px;
   }
 }
 </style>
