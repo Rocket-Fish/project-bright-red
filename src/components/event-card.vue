@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card custom-card">
     <div class="card-content">
       <h3 class="title is-3">
         {{ event.name }}
@@ -42,4 +42,8 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.custom-card {
+  min-width: 320px;
+}
+</style>
