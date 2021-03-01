@@ -3,7 +3,7 @@
     <EventHeader class="mb-5" :event="event" />
     <AnonLoginCard class="mb-5" v-if="!isLoggedIn" />
     <QueueForEvent class="mb-5" :event="event" v-else />
-    <PartyList class="mb-5" :event="event" />
+    <PartyList class="mb-5" :event="event" :isAdmin="isAdmin" />
   </div>
   <div class="container" v-else>
     Loading...
@@ -39,7 +39,8 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
 
-    const { eventUrl } = route.params;
+    const { eventUrl, action } = route.params;
+    const isAdmin = computed(() => action === "admin");
     const event = ref({} as Event);
     const isEventLoaded = computed(() => !!event.value.id);
 
@@ -53,6 +54,7 @@ export default defineComponent({
       event,
       isLoading,
       isEventLoaded,
+      isAdmin,
       isLoggedIn: computed(() => store.getters.isLoggedIn),
     };
   },

@@ -24,8 +24,7 @@ const useHelp = (): UseHelp => {
     },
     numberOfParties: {
       isError: false,
-      error:
-        "IDK how you selected this option but only 1 3 6 and 7 parties are supported at the moment",
+      error: "IDK how you selected this option but only 1 3 6 and 7 parties are supported at the moment",
       help: "",
     },
     maxPlayersInQueue: {
@@ -35,20 +34,16 @@ const useHelp = (): UseHelp => {
     },
     eventTime: {
       isError: false,
-      error:
-        "Date time must be in the future to a maximum of 14 days. (Server DB resource contraints)",
+      error: "Unless you have a time machine, you cannot choose a date in the past",
       help: "Note: Safari and IE does not support input date/time.",
     },
   } as FieldsToHelp);
   const getHelpText = ({ isError, error, help }: Help): string => (isError ? error : help);
   const resetErrors = (): void => {
-    fieldsToHelp.value = Object.entries(fieldsToHelp.value).reduce(
-      (acc: FieldsToHelp, [key, value]) => {
-        acc[key] = { ...value, isError: false } as Help;
-        return acc;
-      },
-      {} as FieldsToHelp,
-    );
+    fieldsToHelp.value = Object.entries(fieldsToHelp.value).reduce((acc: FieldsToHelp, [key, value]) => {
+      acc[key] = { ...value, isError: false } as Help;
+      return acc;
+    }, {} as FieldsToHelp);
   };
 
   return {

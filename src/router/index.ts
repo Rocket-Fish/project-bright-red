@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import http from "@/services/http.service";
+import store from "@/store/index";
 import MainLayout from "../components/main-layout.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -22,21 +24,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "create-event" */ "../views/create-event.vue"),
       },
       {
-        path: "4/:eventUrl",
-        component: () => import(/* webpackChunkName: "event" */ "../components/container.vue"),
-        children: [
-          {
-            path: "",
-            name: "event",
-            component: () => import("../views/event.vue"),
-          },
-          // DESCOPED for version 1
-          // {
-          //   path: "admin",
-          //   name: "event-admin",
-          //   component: () => import("../views/event-admin.vue"),
-          // },
-        ],
+        path: "4/:eventUrl/:action?",
+        name: "event",
+        component: () => import(/* webpackChunkName: "event" */ "../views/event.vue"),
       },
       {
         path: "login",
@@ -65,6 +55,13 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(() => {
+  http.post("check").catch(() => {
+    console.log("logging out");
+    store.dispatch("logoutUser");
+  });
 });
 
 export default router;

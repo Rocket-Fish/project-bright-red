@@ -1,8 +1,17 @@
 <template>
   <div class="card" v-bind="$attrs">
     <div class="card-content">
-      <h3 class="title is-3">Party Roster</h3>
-      <h5 class="subtitle">Active party roster will be displayed below</h5>
+      <div class="is-flex is-justify-content-space-between mb-5">
+        <div class="is-flex-grow-1">
+          <h3 class="title is-3">Party Roster</h3>
+          <h5 class="subtitle">Active party roster will be displayed below</h5>
+        </div>
+        <div v-if="isAdmin">
+          <button class="button is-primary" @click="onFormParty">
+            Form Party
+          </button>
+        </div>
+      </div>
       <div class="columns is-multiline">
         <div class="column" v-for="party of event.parties" :key="party.id">
           <aside class="menu">
@@ -12,7 +21,7 @@
                 <a class="custom-menu-item">
                   <div class="left">
                     <h2>
-                      Placeholder Name
+                      Placeholder Name really long long
                     </h2>
                   </div>
                   <div class="right">
@@ -30,7 +39,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 
-import { Event } from "@/services/event.service";
+import { Event, formParty } from "@/services/event.service";
 
 export default defineComponent({
   name: "party-list",
@@ -39,7 +48,19 @@ export default defineComponent({
       type: Object as PropType<Event>,
       required: true,
     },
+    isAdmin: Boolean,
   },
+  setup(props) {
+    const onFormParty = async () => {
+      const result = await formParty(props.event.id);
+      console.log(result);
+    };
+
+    return {
+      onFormParty,
+    };
+  },
+  methods: {},
 });
 </script>
 <style lang="scss" scoped>
@@ -49,7 +70,7 @@ export default defineComponent({
 
   .left {
     flex: 1 1 0;
-    max-width: 120px;
+    max-width: 200px;
     min-width: 0;
     display: block;
     & > h2 {

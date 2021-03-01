@@ -24,22 +24,10 @@
       <label class="label">When is it?</label>
       <div class="field is-grouped">
         <div class="control">
-          <input
-            type="date"
-            class="input"
-            v-model="config.date"
-            :disabled="isLoading"
-            :class="{ 'is-danger': fieldsToHelp.eventTime.isError }"
-          />
+          <input type="date" class="input" v-model="config.date" :disabled="isLoading" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }" />
         </div>
         <div class="control">
-          <input
-            type="time"
-            class="input"
-            v-model="config.time"
-            :disabled="isLoading"
-            :class="{ 'is-danger': fieldsToHelp.eventTime.isError }"
-          />
+          <input type="time" class="input" v-model="config.time" :disabled="isLoading" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }" />
         </div>
         <div class="control">
           <div class="select" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }">
@@ -90,31 +78,10 @@
         {{ getHelpText(fieldsToHelp.maxPlayersInQueue) }}
       </p>
     </div>
-    <div class="field">
-      <div class="control">
-        <label for="auto-form-party" class="checkbox">
-          <input
-            type="checkbox"
-            id="auto-form-party"
-            :disabled="true"
-            v-model="config.autoFormParty"
-          />
-          Auto form party
-        </label>
-      </div>
-      <p class="help">
-        (This feature is coming soon) If a slot is available, immediately pull users into the party
-        from queue.
-      </p>
-    </div>
+
     <div class="field is-grouped">
       <div class="control">
-        <button
-          class="button is-link"
-          :class="{ 'is-loading': isLoading }"
-          :disabled="isLoading || !isLoggedIn"
-          @click="onCreateEvent"
-        >
+        <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onCreateEvent">
           Create Event
         </button>
       </div>
@@ -159,7 +126,6 @@ export default defineComponent({
       maxPlayersInQueue: 100,
       time: dateNow.value.toFormat("HH:mm"),
       date: dateNow.value.toFormat("yyyy-MM-dd"),
-      autoFormParty: true,
       timeZone: SupportedTimeZones.est,
     } as EventConfig);
 
@@ -169,7 +135,7 @@ export default defineComponent({
 
       try {
         const { url } = await createEvent(config.value);
-        router.push({ name: "event", params: { eventUrl: url } });
+        router.push({ name: "event", params: { eventUrl: url, action: "admin" } });
       } catch (e) {
         console.log(e);
         const { errors } = e;

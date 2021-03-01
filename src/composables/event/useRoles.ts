@@ -60,6 +60,7 @@ const useRole = () => {
     const recursiveMapperFunction = (roleSelection: RoleSelection): RoleSelection => {
       const { subroles, name } = roleSelection;
       const isSelected = array.includes(name);
+      // eslint-disable-next-line
       const insertObject = {} as any;
       if (Array.isArray(subroles) && subroles.length > 0) {
         insertObject.subroles = roleSelection.subroles.map(recursiveMapperFunction);

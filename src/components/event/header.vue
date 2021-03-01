@@ -7,11 +7,7 @@
       <h5 class="subtitle">Organized by {{ event.organizer.displayName }}</h5>
       <p>
         Start time:
-        {{
-          event.eventTime
-            .setZone(event.timeZone.toUpperCase())
-            .toFormat("MMMM dd, yyyy - hh:mm a z")
-        }}
+        {{ event.eventTime.setZone(event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z") }}
       </p>
       <div class="field mt-4">
         <label class="label">Shareable Link</label>

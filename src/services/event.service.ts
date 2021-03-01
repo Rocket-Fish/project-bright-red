@@ -3,7 +3,6 @@ import http from "./http.service";
 import convert from "./camel.service";
 
 export interface Event {
-  autoFormParty: boolean;
   id: number;
   maxPlayersInQueue: number;
   name: string;
@@ -24,7 +23,6 @@ export interface EventConfig {
   maxPlayersInQueue: number;
   time: string;
   date: string;
-  autoFormParty: boolean;
   timeZone: string;
 }
 
@@ -75,6 +73,7 @@ export interface Candidate {
   updatedAt: DateTime;
 }
 
+// eslint-disable-next-line
 const parseEventData = (data: any): Candidate => {
   const rawData = convert(data);
   try {
@@ -107,6 +106,11 @@ export const joinEventQueue = async (config: EventQueueConfig): Promise<Candidat
 
 export const leaveEventQueue = async (eventId: number) => {
   const { data } = await http.delete("event/queue", { params: { forEvent: eventId } });
+  return data;
+};
+
+export const formParty = async (eventId: number) => {
+  const { data } = await http.post("event/party", { forEvent: eventId });
   return data;
 };
 
