@@ -1,7 +1,7 @@
 <template>
   <div class="select">
     <select :value="mapNumberToText[modelValue]" @change="onSelectionChanged" v-bind="$attrs">
-      <option v-for="{ number, text } of allowedNumberOfParties" :key="number">
+      <option v-for="{ number, text } of allowedNumberOfParties" :key="`anop-${number}`">
         {{ text }}
       </option>
     </select>

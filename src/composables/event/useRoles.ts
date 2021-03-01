@@ -24,15 +24,21 @@ const useRole = () => {
       const mapFunction = isMatch && !rSelection.isSelected ? makeAllSubrolesTrue : roleMapper;
       const subroles = rSelection.subroles ? rSelection.subroles.map(mapFunction) : [];
 
-      const shouldThisRoleBeFalse = subroles.reduce((accumulator, roleSelection: RoleSelection) => {
-        const mfs = !!roleSelection.makeParentsFalse;
-        return accumulator || mfs;
-      }, false);
+      let shouldThisRoleBeFalse = false;
+      if (subroles) {
+        shouldThisRoleBeFalse = subroles.reduce((accumulator: boolean, roleSelection: RoleSelection): boolean => {
+          const mfs = !!roleSelection.makeParentsFalse;
+          return accumulator || mfs;
+        }, false);
+      }
       const makeParentsFalse = (isMatch && rSelection.isSelected) || shouldThisRoleBeFalse;
-      const shouldThisRoleBeTrue = subroles.reduce((accumulator, roleSelection: RoleSelection) => {
-        const is = !!roleSelection.isSelected;
-        return accumulator && is;
-      }, subroles.length > 0);
+      let shouldThisRoleBeTrue = false;
+      if (subroles) {
+        shouldThisRoleBeTrue = subroles.reduce((accumulator: boolean, roleSelection: RoleSelection) => {
+          const is = !!roleSelection.isSelected;
+          return accumulator && is;
+        }, subroles.length > 0);
+      }
       // equivilant: shouldThisRoleBeFalse ? false : shouldThisRoleBeTrue ? true : rSelection.isSelected;
       const unmatchedResult = (rSelection.isSelected || shouldThisRoleBeTrue) && !shouldThisRoleBeFalse;
       const isSelected = isMatch ? !rSelection.isSelected : unmatchedResult;
@@ -52,9 +58,13 @@ const useRole = () => {
     if (currentRole.isSelected) {
       result.push(currentRole.name);
     }
-    return [...accumulator, ...result, ...currentRole.subroles.reduce(reduceRoleRecursive, [] as string[])];
+    let additionalInserts = [] as string[];
+    if (Array.isArray(currentRole.subroles)) {
+      additionalInserts = currentRole.subroles.reduce(reduceRoleRecursive, [] as string[]);
+    }
+    return [...accumulator, ...result, ...additionalInserts];
   };
-  const rolesAsArray = computed(() => roles.value.reduce(reduceRoleRecursive, [] as string[]));
+  const rolesAsArray = computed(() => (Array.isArray(roles.value) ? roles.value.reduce(reduceRoleRecursive, [] as string[]) : ([] as string[])));
 
   const convertArrayToRole = (array: string[]) => {
     const recursiveMapperFunction = (roleSelection: RoleSelection): RoleSelection => {

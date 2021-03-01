@@ -3,7 +3,7 @@
     <EventHeader class="mb-5" :event="event" />
     <AnonLoginCard class="mb-5" v-if="!isLoggedIn" />
     <QueueForEvent class="mb-5" :event="event" v-else />
-    <PartyList class="mb-5" :event="event" :isAdmin="isAdmin" />
+    <PartyList class="mb-5" v-model:event="event" :isAdmin="isAdmin" />
   </div>
   <div class="container" v-else>
     Loading...

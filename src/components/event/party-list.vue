@@ -7,25 +7,28 @@
           <h5 class="subtitle">Active party roster will be displayed below</h5>
         </div>
         <div v-if="isAdmin">
-          <button class="button is-primary" @click="onFormParty">
+          <button class="button is-primary" :class="{ 'is-loading': isLoading }" @click="onFormParty" :disabled="isLoading">
             Form Party
           </button>
         </div>
       </div>
       <div class="columns is-multiline">
-        <div class="column" v-for="party of event.parties" :key="party.id">
+        <div class="column" v-for="party of event.parties" :key="`party-${party.id}`">
           <aside class="menu">
             <p class="menu-label">party {{ party.partyNumber }}</p>
             <ul class="menu-list">
-              <li v-for="[i, p] of JSON.parse(party.partyComp).entries()" :key="i">
+              <li v-if="party.candidates.length === 0">
+                <a>[No Members Present]</a>
+              </li>
+              <li v-for="candidate of party.candidates" :key="`candidate-${candidate.id}`">
                 <a class="custom-menu-item">
                   <div class="left">
-                    <h2>
-                      Placeholder Name really long long
-                    </h2>
+                    <p>
+                      {{ candidate.user.displayName }}
+                    </p>
                   </div>
                   <div class="right">
-                    {{ p }}
+                    {{ candidate.activeRole }}
                   </div>
                 </a>
               </li>
@@ -40,6 +43,7 @@
 import { defineComponent, PropType } from "vue";
 
 import { Event, formParty } from "@/services/event.service";
+import useIsLoading from "@/composables/useLoading";
 
 export default defineComponent({
   name: "party-list",
@@ -50,17 +54,27 @@ export default defineComponent({
     },
     isAdmin: Boolean,
   },
-  setup(props) {
+  emits: ["update:event"],
+  setup(props, { emit }) {
+    const { isLoading } = useIsLoading();
+
     const onFormParty = async () => {
-      const result = await formParty(props.event.id);
-      console.log(result);
+      try {
+        isLoading.value = true;
+        const updatedEvent = await formParty(props.event.id);
+        await emit("update:event", updatedEvent);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        isLoading.value = false;
+      }
     };
 
     return {
       onFormParty,
+      isLoading,
     };
   },
-  methods: {},
 });
 </script>
 <style lang="scss" scoped>
@@ -73,7 +87,7 @@ export default defineComponent({
     max-width: 200px;
     min-width: 0;
     display: block;
-    & > h2 {
+    & > p {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

@@ -2,6 +2,12 @@ import { DateTime } from "luxon";
 import http from "./http.service";
 import convert from "./camel.service";
 
+export interface Party {
+  eventId: number;
+  id: number;
+  partyComp: string;
+  partyNumber: number;
+}
 export interface Event {
   id: number;
   maxPlayersInQueue: number;
@@ -16,6 +22,8 @@ export interface Event {
     id: number;
     displayName: string;
   };
+  parties: Party[];
+  queue: Candidate[];
 }
 export interface EventConfig {
   name: string;
@@ -41,13 +49,8 @@ export const createEvent = async (config: EventConfig) => {
   return convert(data);
 };
 
-export const getEvent = async (url: string): Promise<Event> => {
-  const { data } = await http.get("event", {
-    params: {
-      url,
-    },
-  });
-
+// eslint-disable-next-line
+const parseEvent = (data: any) => {
   const { createdAt, eventTime, updatedAt, ...restOfEvent } = convert(data);
 
   return {
@@ -56,6 +59,16 @@ export const getEvent = async (url: string): Promise<Event> => {
     eventTime: DateTime.fromISO(eventTime, { zone: "utc" }),
     updatedAt: DateTime.fromISO(updatedAt),
   };
+};
+
+export const getEvent = async (url: string): Promise<Event> => {
+  const { data } = await http.get("event", {
+    params: {
+      url,
+    },
+  });
+
+  return parseEvent(data);
 };
 
 export interface EventQueueConfig {
@@ -69,8 +82,13 @@ export interface Candidate {
   roles: string[];
   partyId?: number | null;
   userId: number;
+  user: {
+    id: number;
+    displayName: string;
+  };
   createdAt: DateTime;
   updatedAt: DateTime;
+  activeRole: string;
 }
 
 // eslint-disable-next-line
@@ -109,9 +127,9 @@ export const leaveEventQueue = async (eventId: number) => {
   return data;
 };
 
-export const formParty = async (eventId: number) => {
+export const formParty = async (eventId: number): Promise<Event> => {
   const { data } = await http.post("event/party", { forEvent: eventId });
-  return data;
+  return parseEvent(data);
 };
 
 export default { createEvent };

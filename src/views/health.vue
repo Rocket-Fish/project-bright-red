@@ -7,11 +7,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { healthCheck } from '@/services/health.service';
+import { defineComponent } from "vue";
+import { healthCheck } from "@/services/health.service";
 
 export default defineComponent({
-  name: 'health',
+  name: "health",
   data() {
     return {
       health: {},
@@ -26,7 +26,6 @@ export default defineComponent({
       try {
         this.health = await healthCheck();
       } catch (e) {
-        console.log('error');
         this.health = e;
       }
     },

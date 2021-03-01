@@ -32,7 +32,7 @@
         <div class="control">
           <div class="select" :class="{ 'is-danger': fieldsToHelp.eventTime.isError }">
             <select v-model="config.timeZone" :disabled="isLoading">
-              <option v-for="zone of timeZones" :key="zone">{{ zone }}</option>
+              <option v-for="zone of timeZones" :key="`zone-${zone}`">{{ zone }}</option>
             </select>
           </div>
         </div>
@@ -137,7 +137,6 @@ export default defineComponent({
         const { url } = await createEvent(config.value);
         router.push({ name: "event", params: { eventUrl: url, action: "admin" } });
       } catch (e) {
-        console.log(e);
         const { errors } = e;
         // eslint-disable-next-line
         errors.forEach((item: any) => {

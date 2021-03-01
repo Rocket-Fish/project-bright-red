@@ -59,7 +59,6 @@ const router = createRouter({
 
 router.beforeEach(() => {
   http.post("check").catch(() => {
-    console.log("logging out");
     store.dispatch("logoutUser");
   });
 });

@@ -1,6 +1,5 @@
 import axios from "axios";
 
-console.log(process.env.VUE_APP_BACKEND_URL);
 const httpOptions = {
   baseURL: process.env.VUE_APP_BACKEND_URL,
   headers: {

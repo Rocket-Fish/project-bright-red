@@ -17,12 +17,7 @@
   </div>
   <div class="field is-grouped">
     <div class="control">
-      <button
-        class="button is-link"
-        :class="{ 'is-loading': isLoading }"
-        :disabled="isLoading"
-        @click="onCreateUser"
-      >
+      <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading" @click="onCreateUser">
         Create User
       </button>
     </div>
@@ -32,14 +27,7 @@
 import { defineComponent, ref } from "vue";
 import useIsLoading from "@/composables/useLoading";
 import useError from "@/composables/useError";
-import {
-  uniqueNamesGenerator,
-  Config,
-  adjectives,
-  colors,
-  animals,
-  NumberDictionary,
-} from "unique-names-generator";
+import { uniqueNamesGenerator, Config, adjectives, colors, animals, NumberDictionary } from "unique-names-generator";
 import { register } from "@/services/auth.service";
 import { useStore } from "vuex";
 
@@ -87,7 +75,6 @@ export default defineComponent({
         } catch (e) {
           // eslint-disable-next-line
           error.value = "An unknown error has occured, please try again.";
-          console.log(e);
         }
       }
       isLoading.value = false;

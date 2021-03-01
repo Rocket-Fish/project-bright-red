@@ -45,7 +45,7 @@ export default defineComponent({
   },
   computed: {
     currentUrl(): string {
-      return window.location.href;
+      return `${window.location.origin}/4/${this.event.url}`;
     },
   },
   methods: {

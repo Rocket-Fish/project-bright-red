@@ -5,20 +5,28 @@
         Queue for this event
       </h3>
       <h5 class="subtitle">Please select roles you are willing to play</h5>
-      <div class="field">
-        <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading || inQueue" />
-        <p class="help" :class="{ 'is-danger': containsError }">{{ error }}</p>
-      </div>
-      <div class="field is-grouped">
-        <div class="control" v-if="!inQueue">
-          <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
-            Join Queue
-          </button>
+      <div class="columns is-multiline is-vcentered">
+        <div class="column">
+          <div class="field">
+            <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading || inQueue" />
+            <p class="help" :class="{ 'is-danger': containsError }">{{ error }}</p>
+          </div>
+          <div class="field is-grouped">
+            <div class="control" v-if="!inQueue">
+              <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
+                Join Queue
+              </button>
+            </div>
+            <div class="control" v-else>
+              <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
+                LeaveQueue
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="control" v-else>
-          <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
-            LeaveQueue
-          </button>
+        <div class="column" v-if="inQueue">
+          <p class="m-0">Queue Postion</p>
+          <h1 class="title is-1">{{ position }}</h1>
         </div>
       </div>
     </div>
@@ -103,6 +111,17 @@ export default defineComponent({
       }
     };
 
+    const position = computed(() => {
+      if (!inQueue.value) return "";
+      const { length } = props.event.queue;
+      if (length === 0) return "1/1";
+      const index = props.event.queue.findIndex((candidate) => myQueuePosition.value && candidate.id === myQueuePosition.value.id);
+      if (index === -1) {
+        return `~${length + 1}`;
+      }
+      return `${index + 1}/${length}`;
+    });
+
     return {
       roles,
       isLoading,
@@ -111,6 +130,7 @@ export default defineComponent({
       containsError,
       myQueuePosition,
       inQueue,
+      position,
 
       // methods
       selectRole,

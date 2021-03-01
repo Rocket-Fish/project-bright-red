@@ -1,5 +1,5 @@
 <template>
-  <div class="control" v-for="[i, role] of roles.entries()" :key="`${role.name}-${i}`">
+  <div class="control" v-for="[i, role] of roles.entries()" :key="`checkbox-${role.name}-${i}`">
     <label :for="role.name" class="checkbox">
       <input type="checkbox" class="checkbox" :id="role.name" :checked="role.isSelected" :disabled="disabled" @change="emitRole(role.name)" />
       {{ role.name }}
