@@ -46,8 +46,9 @@ export default defineComponent({
         participatingEvents.forEach((ev) => {
           mapEvents[ev.id] = ev;
         });
+        const combinedEvents = Object.keys(mapEvents).map((key) => mapEvents[Number(key)]);
 
-        myEvents.value = Object.keys(mapEvents).map((key) => mapEvents[Number(key)]);
+        myEvents.value = combinedEvents.sort((e1: Event, e2: Event) => e1.eventTime.toMillis() - e2.eventTime.toMillis());
       } catch (e) {
         myEvents.value = [];
       } finally {
