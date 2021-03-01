@@ -12,4 +12,14 @@ export const register = async (payload: RegisterPayload) => {
   return convert(data);
 };
 
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+export const login = async (payload: LoginPayload) => {
+  const { data } = await http.post("login", payload);
+  return convert(data);
+};
+
 export default { register };

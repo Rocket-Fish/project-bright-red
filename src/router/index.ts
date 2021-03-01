@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import http from "@/services/http.service";
 import store from "@/store/index";
+import { login } from "@/services/auth.service";
 import MainLayout from "../components/main-layout.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -59,7 +60,24 @@ const router = createRouter({
 
 router.beforeEach(() => {
   http.post("check").catch((e) => {
-    if (e.errors) if (e.errors[0]) if (e.errors[0].message === "E_INVALID_API_TOKEN: Invalid API token") store.dispatch("logoutUser");
+    if (e.errors && e.errors[0] && e.errors[0].message === "E_INVALID_API_TOKEN: Invalid API token") {
+      // try logging in first.
+      const { user } = store.getters;
+      login({
+        username: user.anonymousId,
+        password: user.anonymousKey,
+      })
+        .then((response: any) => {
+          store.dispatch("setUser", {
+            ...user,
+            jwt: response.token,
+            jwtExp: response.expiresAt,
+          });
+        })
+        .catch(() => {
+          store.dispatch("logoutUser");
+        });
+    }
   });
 });
 
