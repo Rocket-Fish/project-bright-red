@@ -58,8 +58,8 @@ const router = createRouter({
 });
 
 router.beforeEach(() => {
-  http.post("check").catch(() => {
-    store.dispatch("logoutUser");
+  http.post("check").catch((e) => {
+    if (e.errors) if (e.errors[0]) if (e.errors[0].message === "E_INVALID_API_TOKEN: Invalid API token") store.dispatch("logoutUser");
   });
 });
 

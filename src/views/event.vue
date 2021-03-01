@@ -10,7 +10,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, defineAsyncComponent } from "vue";
+import { defineComponent, onMounted, ref, computed, defineAsyncComponent, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import { getEvent, Event } from "@/services/event.service";
 import useIsLoading from "@/composables/useLoading";
@@ -46,8 +46,22 @@ export default defineComponent({
 
     const { isLoading } = useIsLoading();
 
-    onMounted(async () => {
+    const interval = 300000; // 300 seconds = 5 min
+    const timer = ref(null as number | null);
+
+    const refreshEvent = async () => {
       event.value = await getEvent(String(eventUrl));
+    };
+
+    onMounted(() => {
+      refreshEvent();
+      timer.value = setInterval(() => {
+        refreshEvent();
+      }, interval);
+    });
+
+    onBeforeUnmount(() => {
+      if (timer.value) clearInterval(timer.value);
     });
 
     return {
