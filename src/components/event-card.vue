@@ -1,37 +1,45 @@
 <template>
   <div class="card">
-    <header class="card-header">
-      <p class="card-header-title">
-        Delubrum Reginae (Savage)
-      </p>
-    </header>
     <div class="card-content">
-      <div class="content">
-        Organizer:
-      </div>
-      <div class="content">
-        Time:
-      </div>
-      <div class="content">
-        Notes:
-      </div>
+      <h3 class="title is-3">
+        {{ event.name }}
+      </h3>
+      <h5 class="subtitle">Organized by {{ event.organizer.displayName }}</h5>
+      <p>
+        Start time:
+        {{ event.eventTime.setZone(event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z") }}
+      </p>
     </div>
     <div class="card-footer">
-      <a
-        href="#"
-        class="card-footer-item"
-      >
+      <router-link :to="{ name: 'event', params: { eventUrl: event.url } }" class="card-footer-item">
         Details
-      </a>
+      </router-link>
+      <router-link :to="{ name: 'event', params: { eventUrl: event.url, action: 'admin' } }" class="card-footer-item" v-if="isAdimn">
+        Admin
+      </router-link>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from "vue";
+import { useStore } from "vuex";
+import { Event } from "@/services/event.service";
 
 export default defineComponent({
-  name: 'event-card',
+  name: "event-card",
+  props: {
+    event: {
+      type: Object as PropType<Event>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const store = useStore();
+    const userId = computed(() => store.getters.user.id);
+    const isAdimn = props.event.organizer.id === userId.value;
+
+    return { isAdimn };
+  },
 });
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

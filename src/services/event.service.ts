@@ -132,4 +132,18 @@ export const formParty = async (eventId: number): Promise<Event> => {
   return parseEvent(data);
 };
 
+export interface MyEvents {
+  organizedEvents: Event[];
+  participatingEvents: Event[];
+}
+
+export const getEventsList = async (): Promise<MyEvents> => {
+  const { data } = await http.get("events/mine");
+
+  return {
+    organizedEvents: data.organizedEvents.map((e: Event) => parseEvent(e)),
+    participatingEvents: data.participatingEvents.map((e: Event) => parseEvent(e)),
+  };
+};
+
 export default { createEvent };

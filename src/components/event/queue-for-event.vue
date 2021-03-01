@@ -11,22 +11,22 @@
             <RecursiveCheckbox :roles="roles" @check="selectRole" :disabled="isLoading || inQueue" />
             <p class="help" :class="{ 'is-danger': containsError }">{{ error }}</p>
           </div>
-          <div class="field is-grouped">
-            <div class="control" v-if="!inQueue">
-              <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
-                Join Queue
-              </button>
-            </div>
-            <div class="control" v-else>
-              <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
-                LeaveQueue
-              </button>
-            </div>
-          </div>
         </div>
         <div class="column" v-if="inQueue">
           <p class="m-0">Queue Postion</p>
           <h1 class="title is-1">{{ position }}</h1>
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control" v-if="!inQueue">
+          <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onJoinQueue">
+            Join Queue
+          </button>
+        </div>
+        <div class="control" v-else>
+          <button class="button is-link is-light" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onLeaveQueue">
+            LeaveQueue
+          </button>
         </div>
       </div>
     </div>
