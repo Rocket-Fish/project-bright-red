@@ -28,6 +28,11 @@
     <meta property="twitter:card" content="summary" />
     <meta property="twitter:title" :content="event.name" />
     <meta property="twitter:description" :content="startTime" />
+    <meta property="og:title" :content="event.name" />
+    <meta property="og:description" :content="startTime" />
+    <meta property="og:site_name" content="XIVQueue" />
+    <meta property="og:url" content="https://xivqueue.com" />
+    <meta property="og:type" content="website" />
   </teleport>
 </template>
 <script lang="ts">

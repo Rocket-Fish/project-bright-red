@@ -14,6 +14,11 @@
     <meta property="twitter:card" content="summary" />
     <meta property="twitter:title" content="XIV Queue Tool" />
     <meta property="twitter:description" content="organize parties simplified" />
+    <meta property="og:title" content="XIV Queue Tool" />
+    <meta property="og:description" content="organize parties simplified" />
+    <meta property="og:site_name" content="XIVQueue" />
+    <meta property="og:url" content="https://xivqueue.com" />
+    <meta property="og:type" content="website" />
   </teleport>
 </template>
 <script lang="ts">
