@@ -39,7 +39,8 @@ const customGeneratorConfig: Config = {
 };
 export default defineComponent({
   name: "anonymous-login",
-  setup() {
+  emits: ["login"],
+  setup(props, { emit }) {
     const { isLoading } = useIsLoading(false);
     const displayName = ref("");
     const { error, containsError } = useError();
@@ -72,6 +73,7 @@ export default defineComponent({
             anonymousId: username,
             anonymousKey: password,
           });
+          emit("login");
         } catch (e) {
           // eslint-disable-next-line
           error.value = "An unknown error has occured, please try again.";

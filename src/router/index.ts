@@ -67,6 +67,7 @@ router.beforeEach(() => {
         username: user.anonymousId,
         password: user.anonymousKey,
       })
+        // eslint-disable-next-line
         .then((response: any) => {
           store.dispatch("setUser", {
             ...user,
