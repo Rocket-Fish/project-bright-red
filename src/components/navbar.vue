@@ -2,7 +2,7 @@
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <router-link class="navbar-item" :to="{ name: 'home' }">
-        <img src="@/assets/qmeup.png" alt="Logo" width="112" height="28" />
+        <img src="@/assets/xivq.png" alt="Logo" width="112" height="28" />
       </router-link>
       <a
         role="button"
