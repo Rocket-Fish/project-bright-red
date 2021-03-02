@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "",
         name: "home",
-        component: () => import(/* webpackChunkName: "home" */ "../views/home.vue"),
+        component: () => import(/* webpackChunkName: "home" */ "../views/homepage.vue"),
       },
       {
         path: "my-queues",
