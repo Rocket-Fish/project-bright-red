@@ -24,9 +24,14 @@
       </div>
     </div>
   </div>
+  <teleport to="head">
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" :content="event.name" />
+    <meta property="twitter:description" :content="startTime" />
+  </teleport>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 import { Event } from "@/services/event.service";
 
@@ -38,15 +43,19 @@ export default defineComponent({
       required: true,
     },
   },
+
+  setup(props) {
+    const startTime = computed(() => props.event.eventTime.setZone(props.event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z"));
+    const currentUrl = computed(() => `${window.location.origin}/4/${props.event.url}`);
+    return {
+      startTime,
+      currentUrl,
+    };
+  },
   data() {
     return {
       copyButtonMessage: "Copy",
     };
-  },
-  computed: {
-    currentUrl(): string {
-      return `${window.location.origin}/4/${this.event.url}`;
-    },
   },
   methods: {
     copy() {

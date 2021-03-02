@@ -5,10 +5,7 @@
         {{ event.name }}
       </h3>
       <h5 class="subtitle">Organized by {{ event.organizer.displayName }}</h5>
-      <p>
-        Start time:
-        {{ event.eventTime.setZone(event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z") }}
-      </p>
+      <p>Start time: {{ startTime }}</p>
     </div>
     <div class="card-footer">
       <router-link :to="{ name: 'event', params: { eventUrl: event.url } }" class="card-footer-item">
@@ -38,7 +35,8 @@ export default defineComponent({
     const userId = computed(() => store.getters.user.id);
     const isAdimn = props.event.organizer.id === userId.value;
 
-    return { isAdimn };
+    const startTime = computed(() => props.event.eventTime.setZone(props.event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z"));
+    return { isAdimn, startTime };
   },
 });
 </script>
