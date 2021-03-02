@@ -63,21 +63,24 @@ router.beforeEach(() => {
     if (e.errors && e.errors[0] && e.errors[0].message === "E_INVALID_API_TOKEN: Invalid API token") {
       // try logging in first.
       const { user } = store.getters;
-      login({
-        username: user.anonymousId,
-        password: user.anonymousKey,
-      })
-        // eslint-disable-next-line
-        .then((response: any) => {
-          store.dispatch("setUser", {
-            ...user,
-            jwt: response.token,
-            jwtExp: response.expiresAt,
-          });
+
+      if (user) {
+        login({
+          username: user.anonymousId,
+          password: user.anonymousKey,
         })
-        .catch(() => {
-          store.dispatch("logoutUser");
-        });
+          // eslint-disable-next-line
+          .then((response: any) => {
+            store.dispatch("setUser", {
+              ...user,
+              jwt: response.token,
+              jwtExp: response.expiresAt,
+            });
+          })
+          .catch(() => {
+            store.dispatch("logoutUser");
+          });
+      }
     }
   });
 });
