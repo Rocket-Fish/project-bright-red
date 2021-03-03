@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-dynamic-require */
 const path = require('path');
+const compression = require('compression');
 const express = require('express');
 const fs = require('fs');
 const { renderToString } = require('@vue/server-renderer');
@@ -11,6 +12,8 @@ const { DateTime } = require("luxon");
 
 // Create the express app.
 const server = express();
+// Compress all HTTP responses
+server.use(compression());
 
 // we do not know the name of app.js as when its built it has a hash name
 // the manifest file contains the mapping of "app.js" to the hash file which was created
