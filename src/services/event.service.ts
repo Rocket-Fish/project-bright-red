@@ -38,7 +38,7 @@ export const createEvent = async (config: EventConfig) => {
   const generateUtcIsoString = ({ timeZone, time, date }: EventConfig) => {
     const datetime = `${date} ${time} ${timeZone}`;
     const format = "yyyy-MM-dd HH:mm z";
-    return DateTime.fromFormat(datetime, format).toISO();
+    return DateTime.fromFormat(datetime, format);
   };
   const { data } = await http.post("event", {
     ...config,
