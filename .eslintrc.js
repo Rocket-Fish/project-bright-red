@@ -17,7 +17,7 @@ module.exports = {
     quotes: 0,
     'no-param-reassign': 0,
     'object-curly-newline': 0,
-    'max-len': ["error", {"code": 150}], 
-    "no-throw-literal": 0
+    'max-len': ["error", { code: 150 }],
+    "no-throw-literal": 0,
   },
 };

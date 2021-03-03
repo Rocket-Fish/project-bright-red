@@ -1,8 +1,8 @@
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link class="navbar-item" :to="{ name: 'home' }">
-        <img src="@/assets/xivq.png" alt="Logo" width="112" height="28" />
+      <router-link class="navbar-item custom-text" :to="{ name: 'home' }">
+        XIVQueue
       </router-link>
       <a
         role="button"
@@ -72,4 +72,8 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.custom-text {
+  font-size: 1.7rem;
+}
+</style>

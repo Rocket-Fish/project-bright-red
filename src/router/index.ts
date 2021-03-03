@@ -1,9 +1,11 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, createMemoryHistory, RouteRecordRaw } from "vue-router";
 import http from "@/services/http.service";
 import store from "@/store/index";
 import { login } from "@/services/auth.service";
 import MainLayout from "../components/main-layout.vue";
 
+const isServer = typeof window === "undefined";
+const history = isServer ? createMemoryHistory() : createWebHistory();
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/:pathMatch(.*)*",
@@ -54,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history,
   routes,
 });
 

@@ -24,16 +24,6 @@
       </div>
     </div>
   </div>
-  <teleport to="head">
-    <meta property="twitter:card" content="summary" />
-    <meta property="twitter:title" :content="event.name" />
-    <meta property="twitter:description" :content="startTime" />
-    <meta property="og:title" :content="event.name" />
-    <meta property="og:description" :content="startTime" />
-    <meta property="og:site_name" content="XIVQueue" />
-    <meta property="og:url" content="https://xivqueue.com" />
-    <meta property="og:type" content="website" />
-  </teleport>
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
@@ -51,7 +41,7 @@ export default defineComponent({
 
   setup(props) {
     const startTime = computed(() => props.event.eventTime.setZone(props.event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z"));
-    const currentUrl = computed(() => `${window.location.origin}/4/${props.event.url}`);
+    const currentUrl = computed(() => `https://xivqueue.com/4/${props.event.url}`);
     return {
       startTime,
       currentUrl,
