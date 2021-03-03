@@ -6,6 +6,9 @@
     "build": "rm -rf ./dist && npm run build:client && npm run build:server",
     "build:client": "VUE_APP_BACKEND_URL=https://api.xivqueue.com/ vue-cli-service build --dest dist/client",
     "build:server": "SSR=1 VUE_APP_BACKEND_URL=https://api.xivqueue.com/ vue-cli-service build --dest dist/server",
+    "build:client-local": "cross-env VUE_APP_BACKEND_URL=http://localhost:3333/ vue-cli-service build --dest dist/client",
+    "build:server-local": "cross-env SSR=1 VUE_APP_BACKEND_URL=http://localhost:3333/ vue-cli-service build --dest dist/server",
+    "build:local": "rm -rf ./dist && npm run build:client-local && npm run build:server-local",
     "start": "node server.js",
     "serve": "vue-cli-service serve",
     "lint": "vue-cli-service lint"
@@ -41,6 +44,7 @@
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^5.0.2",
+    "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^7.0.0-0",

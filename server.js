@@ -1,11 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-dynamic-require */
-const serialize = require('serialize-javascript');
 const path = require('path');
 const express = require('express');
 const fs = require('fs');
 const { renderToString } = require('@vue/server-renderer');
 const manifest = require('./dist/server/ssr-manifest.json');
+const axios = require('axios');
+const { DateTime } = require("luxon");
+
 
 // Create the express app.
 const server = express();
@@ -23,26 +25,43 @@ server.use('/js', express.static(path.join(__dirname, clientDistPath, 'js')));
 server.use('/css', express.static(path.join(__dirname, clientDistPath, 'css')));
 server.use('/favicon.ico', express.static(path.join(__dirname, clientDistPath, 'favicon.ico')));
 
-// handle all routes in our application
-server.get('*', async (req, res) => {
+
+const routeHandler = async (req, res) => {
   const { app } = await createApp(req);
 
   let appContent = await renderToString(app);
 
-  const renderState = ``;
-
-  fs.readFile(path.join(__dirname, clientDistPath, 'index.html'), (err, html) => {
+  fs.readFile(path.join(__dirname, clientDistPath, 'index.html'), async (err, html) => {
     if (err) {
       throw err;
     }
 
     appContent = `<div id="app">${appContent}</div>`;
 
-    html = html.toString().replace('<div id="app"></div>', `${renderState}${appContent}`);
+    if(req.params.id) {
+      const url = `http://localhost:3333/event/quick?url=${req.params.id}`
+      try {
+        const {data} = await axios.get(url)
+        const title = data.name;
+        const dateTime = DateTime.fromISO(data.event_time)
+        const strTime = dateTime.toFormat("MMMM dd, yyyy - hh:mm a ZZZZ")
+        html = html.toString().replace(/content="Queue tool for XIV"/g, `content="${strTime}"`)
+        html = html.toString().replace(/content="XIV Queue"/g, `content="${title}"`)
+      } catch(e) {
+        console.log(`${url} - request error`)
+      }
+    }
+
+    html = html.toString().replace('<div id="app"></div>', `${appContent}`);
     res.setHeader('Content-Type', 'text/html');
     res.send(html);
   });
-});
+}
+
+server.get('/4/:id', routeHandler)
+
+// handle all routes in our application
+server.get('*', routeHandler);
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {
