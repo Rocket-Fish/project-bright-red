@@ -35,14 +35,14 @@ export interface EventConfig {
 }
 
 export const createEvent = async (config: EventConfig) => {
-  const generateUtcIsoString = ({ timeZone, time, date }: EventConfig) => {
+  const generateDateTime = ({ timeZone, time, date }: EventConfig) => {
     const datetime = `${date} ${time} ${timeZone}`;
     const format = "yyyy-MM-dd HH:mm z";
     return DateTime.fromFormat(datetime, format);
   };
   const { data } = await http.post("event", {
     ...config,
-    eventTime: generateUtcIsoString(config),
+    eventTime: generateDateTime(config),
   });
   return convert(data);
 };
