@@ -5,9 +5,6 @@ export interface UserState {
 
   jwt: string;
   jwtExp: string;
-
-  anonymousId?: string;
-  anonymousKey?: string;
 }
 export interface RootState {
   user?: UserState;
