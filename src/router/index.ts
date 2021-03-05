@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory, createMemoryHistory, RouteRecordRaw } from "vue-router";
 import http from "@/services/http.service";
 import store from "@/store/index";
-import { login } from "@/services/auth.service";
 import MainLayout from "../components/main-layout.vue";
 
 const isServer = typeof window === "undefined";

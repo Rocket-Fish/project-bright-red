@@ -17,9 +17,4 @@ export interface LoginPayload {
   password: string;
 }
 
-export const login = async (payload: LoginPayload) => {
-  const { data } = await http.post("login", payload);
-  return convert(data);
-};
-
 export default { register };
