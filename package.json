@@ -10,7 +10,7 @@
     "build:server-local": "cross-env SSR=1 VUE_APP_BACKEND_URL=http://localhost:3333/ vue-cli-service build --dest dist/server",
     "build:local": "rm -rf ./dist && npm run build:client-local && npm run build:server-local",
     "start": "node server.js",
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

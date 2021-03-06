@@ -70,8 +70,6 @@ export default defineComponent({
             displayName: displayName.value,
             jwt: token,
             jwtExp: expiresAt,
-            anonymousId: username,
-            anonymousKey: password,
           });
           emit("login");
         } catch (e) {

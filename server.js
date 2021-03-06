@@ -15,6 +15,15 @@ const server = express();
 // Compress all HTTP responses
 server.use(compression());
 
+const enforceHTTPS = (req, res, next) => {
+  // The 'x-forwarded-proto' check is for Heroku
+  if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  next();
+}
+server.use(enforceHTTPS)
+
 // we do not know the name of app.js as when its built it has a hash name
 // the manifest file contains the mapping of "app.js" to the hash file which was created
 // therefore get the value from the manifest file thats located in the "dist" directory
@@ -27,7 +36,6 @@ server.use('/img', express.static(path.join(__dirname, clientDistPath, 'img')));
 server.use('/js', express.static(path.join(__dirname, clientDistPath, 'js')));
 server.use('/css', express.static(path.join(__dirname, clientDistPath, 'css')));
 server.use('/favicon.ico', express.static(path.join(__dirname, clientDistPath, 'favicon.ico')));
-
 
 const routeHandler = async (req, res) => {
   const { app } = await createApp(req);
