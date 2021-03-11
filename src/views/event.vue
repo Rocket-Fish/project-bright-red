@@ -53,14 +53,16 @@ export default defineComponent({
 
     onMounted(() => {
       refreshEvent().then(() => {
-        const socket = io(process.env.VUE_APP_BACKEND_URL);
-        socket.emit("join", event.value.url);
-        socket.on("joined-queue", (data) => {
-          event.value.queue.push(data);
-        });
-        socket.on("left-queue", (data) => {
-          event.value.queue = event.value.queue.filter((candidate) => candidate.id !== data.id);
-        });
+        if (typeof window !== "undefined") {
+          const socket = io(process.env.VUE_APP_BACKEND_URL);
+          socket.emit("join", event.value.url);
+          socket.on("joined-queue", (data) => {
+            event.value.queue.push(data);
+          });
+          socket.on("left-queue", (data) => {
+            event.value.queue = event.value.queue.filter((candidate) => candidate.id !== data.id);
+          });
+        }
       });
     });
 
