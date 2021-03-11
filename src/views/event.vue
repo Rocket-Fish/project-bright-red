@@ -16,6 +16,7 @@ import { getEvent, Event } from "@/services/event.service";
 import useIsLoading from "@/composables/useLoading";
 import EventHeader from "@/components/event/header.vue";
 import { useStore } from "vuex";
+import { io } from "socket.io-client";
 
 const QueueForEvent = defineAsyncComponent({
   loader: () => import("@/components/event/queue-for-event.vue"),
@@ -46,22 +47,21 @@ export default defineComponent({
 
     const { isLoading } = useIsLoading();
 
-    const interval = 300000; // 300 seconds = 5 min
-    const timer = ref(null as number | null);
-
     const refreshEvent = async () => {
       event.value = await getEvent(String(eventUrl));
     };
 
     onMounted(() => {
-      refreshEvent();
-      timer.value = setInterval(() => {
-        refreshEvent();
-      }, interval);
-    });
-
-    onBeforeUnmount(() => {
-      if (timer.value) clearInterval(timer.value);
+      refreshEvent().then(() => {
+        const socket = io(process.env.VUE_APP_BACKEND_URL);
+        socket.emit("join", event.value.url);
+        socket.on("joined-queue", (data) => {
+          event.value.queue.push(data);
+        });
+        socket.on("left-queue", (data) => {
+          event.value.queue = event.value.queue.filter((candidate) => candidate.id !== data.id);
+        });
+      });
     });
 
     return {
