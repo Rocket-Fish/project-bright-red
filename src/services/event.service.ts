@@ -32,6 +32,7 @@ export interface EventConfig {
   time: string;
   date: string;
   timeZone: string;
+  autoFormParty: boolean;
 }
 
 export const createEvent = async (config: EventConfig) => {

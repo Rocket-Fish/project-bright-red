@@ -78,7 +78,17 @@
         {{ getHelpText(fieldsToHelp.maxPlayersInQueue) }}
       </p>
     </div>
-
+    <div class="field">
+      <div class="control">
+        <label for="auto-form-party" class="checkbox">
+          <input type="checkbox" id="auto-form-party" v-model="config.autoFormParty" />
+          Auto form party
+        </label>
+      </div>
+      <p class="help">
+        If a slot is available, party will automatically pull users from queue every 30 seconds.
+      </p>
+    </div>
     <div class="field is-grouped">
       <div class="control">
         <button class="button is-link" :class="{ 'is-loading': isLoading }" :disabled="isLoading || !isLoggedIn" @click="onCreateEvent">
@@ -126,6 +136,7 @@ export default defineComponent({
       maxPlayersInQueue: 100,
       time: dateNow.value.toFormat("HH:mm"),
       date: dateNow.value.toFormat("yyyy-MM-dd"),
+      autoFormParty: true,
       timeZone: SupportedTimeZones.est,
     } as EventConfig);
 

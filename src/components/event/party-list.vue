@@ -6,7 +6,7 @@
           <h3 class="title is-3">Party Roster</h3>
           <h5 class="subtitle">Active party roster will be displayed below</h5>
         </div>
-        <div v-if="isAdmin">
+        <div v-if="isAdmin && !event.autoFormParty">
           <button class="button is-primary" :class="{ 'is-loading': isLoading }" @click="onFormParty" :disabled="isLoading">
             Form Party
           </button>
