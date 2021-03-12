@@ -50,7 +50,7 @@ const routeHandler = async (req, res) => {
     appContent = `<div id="app">${appContent}</div>`;
 
     if(req.params.id) {
-      const url = `https://api.xivqueue.com/event/quick?url=${req.params.id}`
+      const url = `${process.env.VUE_APP_BACKEND_URL}/event/quick?url=${req.params.id}`
       try {
         const {data} = await axios.get(url)
         const title = data.name;

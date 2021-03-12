@@ -32,6 +32,7 @@ export interface EventConfig {
   time: string;
   date: string;
   timeZone: string;
+  autoFormParty: boolean;
 }
 
 export const createEvent = async (config: EventConfig) => {
@@ -48,7 +49,7 @@ export const createEvent = async (config: EventConfig) => {
 };
 
 // eslint-disable-next-line
-const parseEvent = (data: any) => {
+export const parseEvent = (data: any) => {
   const { createdAt, eventTime, updatedAt, ...restOfEvent } = convert(data);
 
   return {
