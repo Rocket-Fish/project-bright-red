@@ -41,7 +41,13 @@ export default defineComponent({
 
   setup(props) {
     const startTime = computed(() => props.event.eventTime.setZone(props.event.timeZone.toUpperCase()).toFormat("MMMM dd, yyyy - hh:mm a z"));
-    const currentUrl = computed(() => `https://xivqueue.com/4/${props.event.url}`);
+    const currentUrl = computed(() => {
+      let origin = "https://xivqueue.com";
+      if (typeof window !== "undefined") {
+        origin = window.location.origin;
+      }
+      return `${origin}/4/${props.event.url}`;
+    });
     return {
       startTime,
       currentUrl,
