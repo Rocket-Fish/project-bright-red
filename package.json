@@ -2,6 +2,10 @@
   "name": "xiv-queue",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "14.x",
+    "npm": "6.x"
+  },
   "scripts": {
     "build": "rm -rf ./dist && npm run build:client && npm run build:server",
     "build:client": "VUE_APP_BACKEND_URL=$VUE_APP_BACKEND_URL vue-cli-service build --dest dist/client",
