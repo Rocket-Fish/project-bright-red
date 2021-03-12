@@ -22,7 +22,19 @@ const enforceHTTPS = (req, res, next) => {
   }
   next();
 }
-server.use(enforceHTTPS)
+
+const setHeaders = (req, res, next) => {
+  res.setHeader("Content-Security-Policy", "script-src 'self' https://api.xivqueue.com");
+  res.setHeader("X-Frame-Options", "DENY");
+  return next();
+}
+
+if(process.env.NODE_ENV === 'production') {
+  // enforce https on production
+  server.use(enforceHTTPS)
+  // add additional headers 
+  server.use(setHeaders);
+}
 
 // we do not know the name of app.js as when its built it has a hash name
 // the manifest file contains the mapping of "app.js" to the hash file which was created
