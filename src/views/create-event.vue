@@ -86,7 +86,7 @@
         </label>
       </div>
       <p class="help">
-        If a slot is available, party will automatically pull users from queue every 30 seconds.
+        If a slot is available, party will automatically pull users from queue every 2 seconds.
       </p>
     </div>
     <div class="field is-grouped">
