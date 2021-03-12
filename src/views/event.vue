@@ -12,11 +12,12 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed, defineAsyncComponent, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
-import { getEvent, Event } from "@/services/event.service";
+import { getEvent, Event, parseEvent } from "@/services/event.service";
 import useIsLoading from "@/composables/useLoading";
 import EventHeader from "@/components/event/header.vue";
 import { useStore } from "vuex";
 import { io } from "socket.io-client";
+import convert from "@/services/camel.service";
 
 const QueueForEvent = defineAsyncComponent({
   loader: () => import("@/components/event/queue-for-event.vue"),
@@ -57,10 +58,14 @@ export default defineComponent({
           const socket = io(process.env.VUE_APP_BACKEND_URL);
           socket.emit("join", event.value.url);
           socket.on("joined-queue", (data) => {
-            event.value.queue.push(data);
+            event.value.queue.push(convert(data));
           });
           socket.on("left-queue", (data) => {
             event.value.queue = event.value.queue.filter((candidate) => candidate.id !== data.id);
+          });
+          socket.on("update-event", (e) => {
+            console.log(e);
+            event.value = parseEvent(e);
           });
         }
       });
