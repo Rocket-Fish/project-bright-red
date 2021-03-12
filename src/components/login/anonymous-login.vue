@@ -27,16 +27,9 @@
 import { defineComponent, ref } from "vue";
 import useIsLoading from "@/composables/useLoading";
 import useError from "@/composables/useError";
-import { uniqueNamesGenerator, Config, adjectives, colors, animals, NumberDictionary } from "unique-names-generator";
 import { register } from "@/services/auth.service";
 import { useStore } from "vuex";
 
-const numbers = NumberDictionary.generate({ min: 1000, max: 9999 });
-const customGeneratorConfig: Config = {
-  dictionaries: [adjectives, colors, animals, numbers],
-  length: 4,
-  separator: "-",
-};
 export default defineComponent({
   name: "anonymous-login",
   emits: ["login"],
@@ -55,14 +48,9 @@ export default defineComponent({
       } else if (displayName.value.length > 200) {
         error.value = "name must be at most 200 characters in length";
       } else {
-        const username = `anon-${uniqueNamesGenerator(customGeneratorConfig)}`;
-        const password = `anon-${uniqueNamesGenerator(customGeneratorConfig)}`;
-
         try {
           const { id, token, expiresAt } = await register({
             displayName: displayName.value,
-            username,
-            password,
           });
           await store.dispatch("setUser", {
             id,
